@@ -1,0 +1,6 @@
+Giftify\Giftify\Models\Perfil.class
+Giftify\Giftify\Models\Usuario.class
+Giftify\Giftify\Controllers\ErrorControllerA.class
+Giftify\Giftify\Controllers\RegistroController.class
+Giftify\Giftify\Controllers\IndexController.class
+Giftify\Giftify\GiftifyApplication.class

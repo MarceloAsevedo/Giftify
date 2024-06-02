@@ -1,0 +1,85 @@
+.body{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.contenedor {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.imagen {
+    flex: 1; /* Ocupa la mitad del espacio */
+    background-image: url("images/foto1.avif"); /* Tu imagen aquí */
+    background-size: cover; /* Cubre todo el espacio */
+    background-position: center; /* Posición central */
+}
+
+.formulario {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid #ce7625;
+}
+
+.formulario h1 {
+background: #ce7625;
+border: 2px solid #000000;
+}
+
+h2 {
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+.formulario h4 {
+    height: 40px;
+    font-size: 14px;
+}
+
+.formulario a {
+    color: #ce7625;
+}
+.formulario a:hover {
+    text-decoration: underline;
+}
+
+.botones {
+    padding: 10px 1px;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: 0 auto;
+    justify-content: center;
+    background: #e4ddd6;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+label, input {
+    margin-bottom: 10px;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #000000;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #ce7625;
+    color: rgb(0, 0, 0);
+    border: none;
+    cursor: pointer;
+}
