@@ -1,23 +1,26 @@
-
 package Giftify.Giftify.Models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
+@Entity
 public class Usuario {
 
-    private int id;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int idUsuario;
     private String mail;
- 
     private String password;
- 
-    private String token;
 
+    // Getters and setters
     public int getId() {
-        return id;
+        return idUsuario;
     }
 
     public void setId(int id) {
-        this.id = id;
+      idUsuario = id;
     }
 
     public String getMail() {
@@ -36,25 +39,16 @@ public class Usuario {
         this.password = password;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Usuario(int id, String mail, String password, String token) {
-        this.id = id;
+    public Usuario(int id, String mail, String password) {
+        idUsuario = id;
         this.mail = mail;
         this.password = password;
-        this.token = token;
     }
-     public Usuario(){}
-     public Usuario(String mail, String password, String token){
+
+    public Usuario() {}
+
+    public Usuario(String mail, String password) {
         this.mail = mail;
         this.password = password;
-        this.token = token;
-     }
-     
+    }
 }

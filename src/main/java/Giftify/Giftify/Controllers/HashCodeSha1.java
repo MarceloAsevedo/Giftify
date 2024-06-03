@@ -1,8 +1,8 @@
 
-package com.mycompany.hashcodesha1;
+package Giftify.Giftify.Controllers;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Scanner;
+
 public class HashCodeSha1 {
     public static String SHA1 (String pass){
         try {
@@ -22,15 +22,5 @@ public class HashCodeSha1 {
         }
     }
 
-    public static void main(String[] args) {
-        String user,pass;
-        
-        Scanner usuario = new Scanner(System.in);
-        System.out.println("Ingresar su usuario\n");
-        user = usuario.nextLine();
-        Scanner passs = new Scanner (System.in);
-        System.out.println("Ingresar su contraseña\n");
-        pass = passs.nextLine();
-        System.out.println("\n El usuario con nombre "+user+ "\nPosee un Hash de \n"+SHA1(pass));
-    }
+   
 }
