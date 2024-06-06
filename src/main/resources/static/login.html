@@ -23,7 +23,7 @@
         </div>
     </div>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
+                document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const mail = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -38,6 +38,8 @@
                 if (response.ok) {
                     response.json().then(data => {
                         alert('Login exitoso');
+                        // Almacena la información del usuario en sessionStorage
+                        sessionStorage.setItem('usuario', JSON.stringify(data));
                         window.location.href = 'inicio.html'; // Redirecciona a inicio.html
                     });
                 } else {

@@ -45,7 +45,7 @@ public class RegistroController {
         private String apellido;
         private String fechaNacimiento;
 
-        // Getters and setters
+    
         public String getMail() {
             return mail;
         }
