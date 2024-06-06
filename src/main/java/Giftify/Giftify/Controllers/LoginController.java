@@ -24,7 +24,7 @@ public class LoginController {
         if (usuario != null) {
             return new ResponseEntity<>(usuario, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Credenciales incorrectas", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Usuario o contraseña incorrectos", HttpStatus.UNAUTHORIZED);
         }
     }
 
