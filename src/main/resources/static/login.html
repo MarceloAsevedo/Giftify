@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Giftify</title>
+    <base href="/static/">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="contenedor">
+        <div class="imagen"></div>
+        <div class="formulario">
+            <h1>GIFTIFY</h1>
+            <h2>Inicio de Sesión</h2>
+            <form id="loginForm">
+                <label for="email">Correo electrónico:</label>
+                <input class="botones" type="email" placeholder="Ejemplo: matiasfernandez@gmail.com" id="email" required>
+                <label for="password">Contraseña:</label>
+                <input class="botones" type="password" placeholder="Ejemplo: mati1234" id="password" required>
+                <button type="submit">Ingresar</button>
+                <h4>¿Aun no tienes cuenta? <a href="registro.html">Registrate aqui</a></h4>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const mail = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/usuarios/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mail, password })
+            }).then(response => {
+                if (response.ok) {
+                    response.json().then(data => {
+                        alert('Login exitoso');
+                        window.location.href = 'inicio.html'; // Redirecciona a inicio.html
+                    });
+                } else {
+                    alert('Credenciales incorrectas');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

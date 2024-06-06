@@ -2,9 +2,10 @@ Giftify\Giftify\Repositories\PerfilRepository.class
 Giftify\Giftify\Models\Perfil.class
 Giftify\Giftify\Controllers\HashCodeSha1.class
 Giftify\Giftify\Models\Usuario.class
-Giftify\Giftify\Controllers\UsuarioController$RegistroRequest.class
-Giftify\Giftify\Controllers\UsuarioController.class
+Giftify\Giftify\Controllers\LoginController.class
+Giftify\Giftify\Controllers\RegistroController$RegistroRequest.class
 Giftify\Giftify\Controllers\ErrorControllerA.class
+Giftify\Giftify\Controllers\LoginController$LoginRequest.class
 Giftify\Giftify\Controllers\RegistroController.class
 Giftify\Giftify\Controllers\IndexController.class
 Giftify\Giftify\Repositories\UsuarioRepository.class

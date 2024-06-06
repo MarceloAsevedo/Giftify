@@ -26,7 +26,7 @@
                 <label for="repetirPassword">Repetir contraseña:</label>
                 <input class="botones" type="password" placeholder="Ejemplo: mati1234" id="repetirPassword" required>
                 <button type="submit">Registrarse</button>
-                <h4><a href="index.html">¿Ya tienes cuenta?</a></h4>
+                <h4><a href="login.html">¿Ya tienes cuenta?</a></h4>
             </form>
         </div>
     </div>
@@ -35,9 +35,15 @@
             event.preventDefault();
             const mail = document.getElementById('mail').value;
             const password = document.getElementById('password').value;
+            const repetirPassword = document.getElementById('repetirPassword').value;
             const nombre = document.getElementById('nombre').value;
             const apellido = document.getElementById('apellido').value;
             const fechaNacimiento = document.getElementById('fechanacimiento').value;
+
+            if (password !== repetirPassword) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
 
             fetch('/usuarios/register', {
                 method: 'POST',
@@ -48,6 +54,7 @@
             }).then(response => {
                 if (response.ok) {
                     alert('Usuario registrado exitosamente');
+                    window.location.href = 'login.html'; // Redirecciona a login.html
                 } else {
                     alert('Error al registrar usuario');
                 }
