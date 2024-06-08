@@ -23,8 +23,9 @@
         </div>
     </div>
     <script>
-                document.getElementById('loginForm').addEventListener('submit', function(event) {
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            const form = event.target;
             const mail = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -37,6 +38,7 @@
             }).then(response => {
                 if (response.ok) {
                     response.json().then(data => {
+                        form.reset(); // Limpia el formulario
                         alert('Login exitoso');
                         // Almacena la información del usuario en sessionStorage
                         sessionStorage.setItem('usuario', JSON.stringify(data));

@@ -33,6 +33,7 @@
     <script>
         document.getElementById('registroForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            const form = event.target;
             const mail = document.getElementById('mail').value;
             const password = document.getElementById('password').value;
             const repetirPassword = document.getElementById('repetirPassword').value;
@@ -53,10 +54,13 @@
                 body: JSON.stringify({ mail, password, nombre, apellido, fechaNacimiento })
             }).then(response => {
                 if (response.ok) {
-                    alert('Usuario registrado exitosamente');
+                    form.reset(); // Limpia el formulario
+                    alert('Usuario registrado correctamente');
                     window.location.href = 'login.html'; // Redirecciona a login.html
                 } else {
-                    alert('Error al registrar usuario');
+                    response.text().then(text => {
+                        alert("El Mail ya esta en uso"); // Muestra el mensaje de error
+                    });
                 }
             });
         });

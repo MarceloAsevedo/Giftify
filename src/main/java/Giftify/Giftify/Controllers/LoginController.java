@@ -20,7 +20,7 @@ public class LoginController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         String contraHash = HashCodeSha1.SHA1(loginRequest.getPassword());
         Usuario usuario = usuarioRepository.findByMailAndPassword(loginRequest.getMail(), contraHash);
-
+            //Si usuario es null, devuelve una respuesta con el usuario y un estado HTTP 200 OK (HttpStatus.OK).
         if (usuario != null) {
             return new ResponseEntity<>(usuario, HttpStatus.OK);
         } else {

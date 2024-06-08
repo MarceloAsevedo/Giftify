@@ -20,21 +20,24 @@ public class RegistroController {
     @Autowired
     private PerfilRepository perfilRepository;
 
-   
-
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistroRequest registroRequest) {
-        
-        String contraHassh = HashCodeSha1.SHA1(registroRequest.getPassword());
+        // Verifica si el correo electrónico ya está registrado
+        if (usuarioRepository.findByMail(registroRequest.getMail()) != null) {
+            return new ResponseEntity<>("El mail esta en uso", HttpStatus.BAD_REQUEST);
+        }
 
-       
-        Usuario usuario = new Usuario(registroRequest.getMail(), contraHassh);
+        // Hash de contraseña
+        String contraHash = HashCodeSha1.SHA1(registroRequest.getPassword());
+
+        Usuario usuario = new Usuario(registroRequest.getMail(), contraHash);
         Usuario savedUsuario = usuarioRepository.save(usuario);
 
-        // Crear un perfil asociado al usuario
+        // Crea el perfil asociado al usuario y guarda nombre, apellido y fecha de nacimiento en la tabla perfil con la ID de usuario asociada
         Perfil perfil = new Perfil(registroRequest.getNombre(), registroRequest.getApellido(), registroRequest.getFechaNacimiento(), savedUsuario.getId());
         perfilRepository.save(perfil);
 
+        // Estado HTTP (HttpStatus.CREATED): Indica el estado de la operación. HttpStatus.CREATED (201) significa que la solicitud fue exitosa y que se guardaron los datos
         return new ResponseEntity<>(savedUsuario, HttpStatus.CREATED);
     }
 
@@ -45,7 +48,6 @@ public class RegistroController {
         private String apellido;
         private String fechaNacimiento;
 
-    
         public String getMail() {
             return mail;
         }
