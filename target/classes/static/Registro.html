@@ -51,7 +51,14 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ mail, password, nombre, apellido, fechaNacimiento })
+                body: JSON.stringify({ 
+                    mail: mail,
+                    password: password,
+                    repetirPassword: repetirPassword,
+                    nombre: nombre,
+                    apellido: apellido,
+                    fechaNacimiento: fechaNacimiento 
+                })
             }).then(response => {
                 if (response.ok) {
                     form.reset(); // Limpia el formulario
@@ -59,7 +66,7 @@
                     window.location.href = 'login.html'; // Redirecciona a login.html
                 } else {
                     response.text().then(text => {
-                        alert("El Mail ya esta en uso"); // Muestra el mensaje de error
+                        alert(text); // Muestra el mensaje de error
                     });
                 }
             });

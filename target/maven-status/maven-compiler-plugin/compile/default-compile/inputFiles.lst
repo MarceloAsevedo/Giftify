@@ -1,10 +1,13 @@
-C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Controllers\RegistroController.java
 C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Controllers\ErrorControllerA.java
+C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Repositories\PerfilRepository.java
+C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Controllers\LoginController.java
+C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Controllers\RegistroController.java
 C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Models\Perfil.java
 C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Repositories\UsuarioRepository.java
 C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Controllers\IndexController.java
+C:\Giftify\Giftify\src\main\java\Giftify\Giftify\DTOandServices\EnvioMailService.java
 C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Models\Usuario.java
-C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Repositories\PerfilRepository.java
+C:\Giftify\Giftify\src\main\java\Giftify\Giftify\DTOandServices\UsuarioDTO.java
+C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Config\MailConfig.java
 C:\Giftify\Giftify\src\main\java\Giftify\Giftify\GiftifyApplication.java
 C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Controllers\HashCodeSha1.java
-C:\Giftify\Giftify\src\main\java\Giftify\Giftify\Controllers\LoginController.java

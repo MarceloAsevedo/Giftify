@@ -4,7 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+//ver uso de lombok
+// crear dto de usuario para esconder la password en el inicio de sesion
 @Entity
 public class Usuario {
 
