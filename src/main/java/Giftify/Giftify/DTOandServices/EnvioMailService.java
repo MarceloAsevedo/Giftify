@@ -16,7 +16,7 @@ public class EnvioMailService {
     public void enviarCorreoRegistro(String nombre, String correo) throws MessagingException {
         // Configurar el mensaje de confirmación de registro
         MimeMessage messageConfirmacion = mailSender.createMimeMessage();
-        messageConfirmacion.setFrom(new InternetAddress("asevedom98@gmail.com"));
+        messageConfirmacion.setFrom(new InternetAddress("eldeprobador@gmail.com"));
         messageConfirmacion.addRecipient(Message.RecipientType.TO, new InternetAddress(correo));
         messageConfirmacion.setSubject("Registro exitoso en Giftify");
 
