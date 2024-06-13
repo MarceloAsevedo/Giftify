@@ -8,7 +8,7 @@ public class HashCodeSha1 {
         try {
         MessageDigest sha256=MessageDigest.getInstance("SHA-256");
         byte [] MessageBytes = pass.getBytes();
-        byte [] HashBytes = sha1.digest(MessageBytes);
+        byte [] HashBytes = sha256.digest(MessageBytes);
         
         StringBuilder sb = new StringBuilder();
         
