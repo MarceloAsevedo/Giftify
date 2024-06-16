@@ -80,8 +80,8 @@ public ResponseEntity<?> register(@RequestBody RegistroRequest registroRequest) 
         return new ResponseEntity<>("Error al enviar el correo de confirmación", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    UsuarioDTO usuarioDTO = new UsuarioDTO(savedUsuario.getMail());
-    return new ResponseEntity<>(usuarioDTO, HttpStatus.CREATED);
+    
+    return new ResponseEntity<>(usuario, HttpStatus.CREATED);
 }
 
     private boolean validarPassword(String password) {
