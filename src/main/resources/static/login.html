@@ -38,17 +38,18 @@
                 },
                 body: JSON.stringify({ mail, password })
             }).then(response => {
-                if (response.ok) {
-                    response.json().then(data => {
+                return response.json().then(data => {
+                    if (response.ok) {
                         form.reset(); // Limpia el formulario
                         alert('Login exitoso');
-                        // Almacena la información del usuario en sessionStorage
-                        sessionStorage.setItem('usuario', JSON.stringify(data));
+                        sessionStorage.setItem('usuario', JSON.stringify(data)); // Guarda solo el correo del dto
                         window.location.href = 'inicio.html'; // Redirecciona a inicio.html
-                    });
-                } else {
-                    alert('Usuario o contraseña incorrectos');
-                }
+                    } else {
+                        alert(data); // Muestra el mensaje de error
+                    }
+                });
+            }).catch(error => {
+                console.error('Error:', error);
             });
         });
     </script>

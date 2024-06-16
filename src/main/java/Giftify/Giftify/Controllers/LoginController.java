@@ -1,12 +1,13 @@
 package Giftify.Giftify.Controllers;
 
+import Giftify.Giftify.DTOandServices.UsuarioDTO;
 import Giftify.Giftify.Models.Usuario;
-
 import Giftify.Giftify.Repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/usuarios")
 public class LoginController {
@@ -14,15 +15,14 @@ public class LoginController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-   
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        String contraHash = HashCodeSha1.SHA1(loginRequest.getPassword());
+        String contraHash = HashCodeSha1.SHA256(loginRequest.getPassword());
         Usuario usuario = usuarioRepository.findByMailAndPassword(loginRequest.getMail(), contraHash);
-            //Si usuario es null, devuelve una respuesta con el usuario y un estado HTTP 200 OK (HttpStatus.OK).
+
         if (usuario != null) {
-            return new ResponseEntity<>(usuario, HttpStatus.OK);
+            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getMail());
+            return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Usuario o contraseña incorrectos", HttpStatus.UNAUTHORIZED);
         }

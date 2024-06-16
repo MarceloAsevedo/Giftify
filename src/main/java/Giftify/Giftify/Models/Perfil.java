@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDate;
 
 @Entity
 public class Perfil {
@@ -13,7 +14,7 @@ public class Perfil {
     private int idPerfil;
     private String nombre;
     private String apellido;
-    private String fechaNacimiento;
+    private LocalDate fechaNacimiento;
     private int usuarioId;
 
     // Getters and setters
@@ -41,11 +42,11 @@ public class Perfil {
         this.apellido = apellido;
     }
 
-    public String getFechaNacimiento() {
+    public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(String fechaNacimiento) {
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 
@@ -59,7 +60,7 @@ public class Perfil {
 
     public Perfil() {}
 
-    public Perfil(String nombre, String apellido, String fechaNacimiento, int usuarioId) {
+    public Perfil(String nombre, String apellido, LocalDate fechaNacimiento, int usuarioId) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;

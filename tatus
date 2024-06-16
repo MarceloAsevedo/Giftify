@@ -1,0 +1,96 @@
+[33mcommit 76733ce11c5801f91c9faf7f5b54470f69c05b25[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Tue Jun 11 18:27:57 2024 -0300
+
+    Configuración mail de prueba
+
+[33mcommit e6450b7ebbfa96b9ec97cf701b7908da96c2dd6a[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Tue Jun 11 12:57:18 2024 -0300
+
+    Envio mail confirmacion de registro
+
+[33mcommit bd236cb28aa0cbfa667a8e38f416d9d21863ef2d[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Sat Jun 8 23:17:01 2024 -0300
+
+    Imagen en login
+
+[33mcommit 3e6d247ca4759933b1ac7b9b22cad97b5f99100d[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Sat Jun 8 17:15:48 2024 -0300
+
+    Validacion de si está en uso el mail
+
+[33mcommit f0cf9f85f10f8a8372681ec901d1f4b18aaff0ae[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Thu Jun 6 19:48:02 2024 -0300
+
+    Cambio mensaje de alerta de login
+
+[33mcommit 836e6df2c2938eebdef4096c1199dd7d54acdee4[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Thu Jun 6 14:51:41 2024 -0300
+
+    modificacion mensaje en inicio html
+
+[33mcommit ea466db1125130b40305a2d20ec9209cf1ce191f[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Thu Jun 6 14:34:24 2024 -0300
+
+    Login y cambios de vistas
+
+[33mcommit d75addb38dac653324b0d6716609f384ca4eceb0[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Thu Jun 6 13:50:15 2024 -0300
+
+    Campo de repetir contraseña
+
+[33mcommit 1a8c56be8b676800b88df40a41ea1d55d792a735[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Tue Jun 4 12:19:29 2024 -0300
+
+    Imagen de regalos1
+
+[33mcommit 96ba2f564dfdc49b2b0cc66e7380b25f6eb426d6[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Mon Jun 3 12:55:21 2024 -0300
+
+    registro funcionando con hash
+
+[33mcommit a80c539e122cfe450bcf5d3fc5d949977e92e674[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Sat Jun 1 22:31:51 2024 -0300
+
+    Acomodo carpetas con el Hash
+
+[33mcommit bff105089883c7a974bc3b2e5d793ccef066f8a4[m
+Merge: 4523471 49c9c09
+Author: lucas dichiara <lucasdichiara21@gmail.com>
+Date:   Fri May 24 20:29:54 2024 -0300
+
+    Merge branch 'main' of https://github.com/MarceloAsevedo/Giftify
+
+[33mcommit 4523471420359f0ec3c8f9745f2ab2607b4a2b47[m
+Author: lucas dichiara <lucasdichiara21@gmail.com>
+Date:   Fri May 24 20:27:20 2024 -0300
+
+    codigo de generador de hash
+
+[33mcommit 8b9982c5ea23b99a45ecc3487ad66fcb11c9d601[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: lucas dichiara <lucasdichiara21@gmail.com>
+Date:   Fri May 24 20:16:05 2024 -0300
+
+    Subiendo algoritmo para la generación del token hash
+
+[33mcommit 49c9c093a6dd771df1dd5069a6bf29957af448aa[m
+Author: MarceloAsevedo <asevedom98@gmail.com>
+Date:   Wed May 22 16:25:25 2024 -0300
+
+    Commit Java 1 front y back
+
+[33mcommit 6e3a497271c5b6cc91bd7d91a4a8b99688ffae2c[m[33m ([m[1;31morigin/preProduccion[m[33m, [m[1;32mpreProduccion[m[33m)[m
+Author: Marcelo Alejandro Asevedo <116969032+MarceloAsevedo@users.noreply.github.com>
+Date:   Mon Apr 29 21:30:12 2024 -0300
+
+    Initial commit
