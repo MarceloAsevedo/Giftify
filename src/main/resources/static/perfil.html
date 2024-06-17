@@ -1,12 +1,60 @@
 <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giftify Perfil</title>
+    
+  
+</head>
+<body>
+    <div class="contenedor">
+        <header>
+            <h1>Giftify</h1>
+            <a href="logout.html" id="logoutButton">Cerrar Sesión</a>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="cambiopass.html">Cambiar contraseña</a></li>
+                <li>Crear lista</li>
+                <li>Buscar</li>
+                <li>Hacer publiacación</li>
+                <!-- Añadir más enlaces según las funcionalidades -->
+            </ul>
+        </nav>
+        
+        <div class="fotoPerfil">
+            <img src="fotoperfil.png" alt="Foto de Perfil" id="fotoPerfil">
+            <input type="file" id="fotoPerfil" style="display:none;">
+            <button>Cambiar Foto</button>
+            <button id="botonBorrarFoto">Eliminar Foto</button>
+        </div>
 
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>Perfil</div>
-    </body>
+        <div class="form-section">
+            <h2>Editar Perfil</h2>
+            <form id="formEditarPerfil">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+                
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" name="apellido" required>
+                
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" required></textarea>
+                
+                <label for="link">Link:</label>
+                <input type="url" id="link" name="link" required>
+                
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+
+       
+    </div>
+    
+ 
+</body>
 </html>
