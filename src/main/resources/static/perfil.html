@@ -1,60 +1,78 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giftify Perfil</title>
-    
-  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giftify</title>
+  <link rel="stylesheet" href="csspruebaperfil.css">
 </head>
 <body>
-    <div class="contenedor">
-        <header>
-            <h1>Giftify</h1>
-            <a id="btnCerrarSesion">Cerrar Sesión</a>
-        </header>
-        
-        <nav>
-            <ul>
-                <li><a href="inicio.html">Inicio</a></li>
-                <li><a href="perfil.html">Perfil</a></li>
-                <li><a href="cambiopass.html">Cambiar contraseña</a></li>
-                <li>Crear lista</li>
-                <li>Buscar</li>
-                <li>Hacer publiacación</li>
-                <!-- Añadir más enlaces según las funcionalidades -->
-            </ul>
-        </nav>
-        
-        <div class="fotoPerfil">
-            <img src="fotoperfil.png" alt="Foto de Perfil" id="fotoPerfil">
-            <input type="file" id="fotoPerfil" style="display:none;">
-            <button>Cambiar Foto</button>
-            <button id="botonBorrarFoto">Eliminar Foto</button>
-        </div>
-
-        <div class="form-section">
-            <h2>Editar Perfil</h2>
-            <form id="formEditarPerfil">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required>
-                
-                <label for="apellido">Apellido:</label>
-                <input type="text" id="apellido" name="apellido" required>
-                
-                <label for="descripcion">Descripción:</label>
-                <textarea id="descripcion" name="descripcion" required></textarea>
-                
-                <label for="link">Link:</label>
-                <input type="url" id="link" name="link" required>
-                
-                <button type="submit">Guardar Cambios</button>
-            </form>
-        </div>
-
-       
+  <header class="header">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+        <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+        <path d="M12 8v13"></path>
+        <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+        <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+      </svg>
+      <span>LOGO</span>
     </div>
-    
- 
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+      <line x1="4" x2="20" y1="12" y2="12"></line>
+      <line x1="4" x2="20" y1="6" y2="6"></line>
+      <line x1="4" x2="20" y1="18" y2="18"></line>
+    </svg>
+  </header>
+  <div class="container">
+    <aside class="sidebar">
+      <nav>
+        <button class="button" onclick="location.href='inicio.html'">Inicio</button>
+        <button class="button" onclick="location.href='perfil.html'">Buscar</button>
+        <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
+        <button class="button" onclick="location.href='perfil.html'">Mis Listas</button>
+        <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+        <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <section class="profile">
+        <img src="/placeholder.svg" alt="Profile Image" class="profile-img">
+        <h1>Nombre Apellido</h1>
+        <div class="profile-info">
+          <span>Publicaciones</span>
+          <span>Deseos </span>
+          <span>Amigos</span>
+        </div>
+        <p>Acá pondríamos una descripción si tuviéramos una</p>
+        <a href="#">www.unlinkqueponga.com</a>
+      </section>
+      <section class="wishes">
+        <h2>Tus deseos</h2>
+        <div class="wish-list">
+          <div class="wish-item">
+            <img src="/placeholder.svg" alt="Wish Image" class="wish-img">
+            <span>Regalo 1</span>
+          </div>
+          <div class="wish-item">
+            <img src="/placeholder.svg" alt="Wish Image" class="wish-img">
+            <span>Regalo 2</span>
+          </div>
+          <div class="wish-item">
+            <img src="/placeholder.svg" alt="Wish Image" class="wish-img">
+            <span>Regalo 3</span>
+          </div>
+        </div>
+        <a href="#">Ver más</a>
+      </section>
+      <section class="publications">
+        <h2>Tus publicaciones</h2>
+        <div class="publication-list">
+          <img src="/placeholder.svg" alt="Publication Image" class="publication-img">
+          <img src="/placeholder.svg" alt="Publication Image" class="publication-img">
+          <img src="/placeholder.svg" alt="Publication Image" class="publication-img">
+        </div>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
