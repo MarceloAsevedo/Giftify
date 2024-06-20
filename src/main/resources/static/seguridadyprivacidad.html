@@ -32,6 +32,7 @@
         <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
         <button class="button" onclick="location.href='perfil.html'">Mis Listas</button>
         <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+        <button class="button" id="logoutButton">Cerrar Sesión</button>
       </nav>
     </aside>
     <main class="main-content">
@@ -52,39 +53,41 @@
       </div>
     </main>
   </div>
-  <script>
-      document.getElementById('passwordForm').addEventListener('submit', function(event) {
-          event.preventDefault();
-          const form = event.target;
-          const password = document.getElementById('password').value;
-          const newPassword = document.getElementById('newPassword').value;
-          const repetirPassword = document.getElementById('repetirPassword').value;
+ <script>
+        document.getElementById('passwordForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const password = document.getElementById('password').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const repetirPassword = document.getElementById('repetirPassword').value;
+            const mail = JSON.parse(sessionStorage.getItem('usuario')).mail; // Obtener el correo electrónico del sessionStorage
 
-          if (newPassword !== repetirPassword) {
-              alert('Las nuevas contraseñas no coinciden');
-              return;
-          }
+            if (newPassword !== repetirPassword) {
+                alert('Las nuevas contraseñas no coinciden');
+                return;
+            }
 
-          fetch('/usuarios/change-password', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ password, newPassword })
-          }).then(response => {
-              if (response.ok) {
-                  form.reset(); // Limpia el formulario
-                  alert('Contraseña cambiada correctamente');
-                  window.location.href = 'login.html'; // Redirecciona a login.html
-              } else {
-                  response.text().then(text => {
-                      alert(text); // Muestra el mensaje de error
-                  });
-              }
-          }).catch(error => {
-              console.error('Error:', error);
-          });
-      });
-  </script>
+            fetch('/usuarios/cambioPassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mail, password, newPassword })
+            }).then(response => {
+                if (response.ok) {
+                    form.reset(); // Limpia el formulario
+                    alert('Contraseña cambiada correctamente');
+                    window.location.href = 'login.html'; // Redirecciona a login.html
+                } else {
+                    response.text().then(text => {
+                        alert(text); // Muestra el mensaje de error
+                    });
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+</script>
+<script src="cerrarSesion.js"></script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 Giftify\Giftify\Config\MailConfig.class
 Giftify\Giftify\Controllers\HashCodeSha1.class
 META-INF\spring-configuration-metadata.json
+Giftify\Giftify\Controllers\LogoutController.class
 Giftify\Giftify\DTOandServices\EnvioMailService.class
 Giftify\Giftify\Controllers\LoginController.class
+Giftify\Giftify\Controllers\UsuarioController$CambioPasswordRequest.class
 Giftify\Giftify\Controllers\ErrorControllerA.class
 Giftify\Giftify\Controllers\LoginController$LoginRequest.class
 Giftify\Giftify\Controllers\RegistroController.class
@@ -11,6 +13,7 @@ Giftify\Giftify\GiftifyApplication.class
 Giftify\Giftify\Repositories\PerfilRepository.class
 Giftify\Giftify\Models\Perfil.class
 Giftify\Giftify\Models\Usuario.class
+Giftify\Giftify\Controllers\UsuarioController.class
 Giftify\Giftify\Controllers\RegistroController$RegistroRequest.class
 Giftify\Giftify\DTOandServices\UsuarioDTO.class
 Giftify\Giftify\Controllers\IndexController.class
