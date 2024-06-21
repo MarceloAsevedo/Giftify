@@ -1,4 +1,3 @@
-
 package Giftify.Giftify.Controllers;
 
 import Giftify.Giftify.DTOandServices.EnvioMailService;
@@ -32,57 +31,54 @@ public class RegistroController {
     private EnvioMailService envioMailService;
 
     @PostMapping("/register")
-public ResponseEntity<?> register(@RequestBody RegistroRequest registroRequest) {
-    
+    public ResponseEntity<?> register(@RequestBody RegistroRequest registroRequest) {
 
-    if (usuarioRepository.findByMail(registroRequest.getMail()) != null) {
-        
-        return new ResponseEntity<>("El mail está en uso", HttpStatus.BAD_REQUEST);
+        // Verificar si el correo ya está en uso
+        if (usuarioRepository.findByMail(registroRequest.getMail()) != null) {
+            return new ResponseEntity<>("El correo ya está registrado", HttpStatus.BAD_REQUEST);
+        }
+
+        // Verificar si las contraseñas coinciden
+        if (!registroRequest.getPassword().equals(registroRequest.getRepetirPassword())) {
+            return new ResponseEntity<>("Las contraseñas no coinciden", HttpStatus.BAD_REQUEST);
+        }
+
+        // Validar fecha de nacimiento (mayor de 13 años)
+        LocalDate fechaNacimiento;
+        try {
+            fechaNacimiento = LocalDate.parse(registroRequest.getFechaNacimiento());
+            if (Period.between(fechaNacimiento, LocalDate.now()).getYears() < 13) {
+                return new ResponseEntity<>("El usuario debe ser mayor de 13 años", HttpStatus.BAD_REQUEST);
+            }
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>("Formato de fecha de nacimiento incorrecto", HttpStatus.BAD_REQUEST);
+        }
+
+        // Validar la contraseña
+        if (!validarPassword(registroRequest.getPassword())) {
+            return new ResponseEntity<>("La contraseña debe tener entre 8 y 16 caracteres, incluir al menos una mayúscula, un número y un carácter especial.", HttpStatus.BAD_REQUEST);
+        }
+
+        // Crear y guardar el usuario
+        String contraHash = HashCodeSha1.SHA256(registroRequest.getPassword());
+        Usuario usuario = new Usuario(registroRequest.getMail(), contraHash);
+        usuario = usuarioRepository.save(usuario);
+
+        // Crear y guardar el perfil
+        Perfil perfil = new Perfil(registroRequest.getNombre(), registroRequest.getApellido(), fechaNacimiento, usuario);
+        perfil = perfilRepository.save(perfil);
+
+        // Enviar correo de confirmación
+        try {
+            envioMailService.enviarCorreoRegistro(registroRequest.getNombre(), registroRequest.getMail());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            // Si hay un error en el envío del correo, considera revertir la operación guardada
+            return new ResponseEntity<>("Error al enviar el correo de confirmación", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     }
-
-    if (!registroRequest.getPassword().equals(registroRequest.getRepetirPassword())) {
-        
-        return new ResponseEntity<>("Las contraseñas no coinciden", HttpStatus.BAD_REQUEST);
-    }
-
-    // Validar edad (mayor de 13 años)
-    LocalDate fechaNacimiento;
-    try {
-        fechaNacimiento = LocalDate.parse(registroRequest.getFechaNacimiento());
-    } catch (DateTimeParseException e) {
-        return new ResponseEntity<>("Formato de fecha de nacimiento incorrecto", HttpStatus.BAD_REQUEST);
-    }
-
-    if (Period.between(fechaNacimiento, LocalDate.now()).getYears() < 13) {
-        
-        return new ResponseEntity<>("El usuario debe ser mayor de 13 años", HttpStatus.BAD_REQUEST);
-    }
-
-    // Validar contraseña
-    String password = registroRequest.getPassword();
-    if (!validarPassword(password)) {
-       
-        return new ResponseEntity<>("La contraseña debe tener entre 8 y 16 caracteres, incluir al menos una mayúscula, un número y un carácter especial.", HttpStatus.BAD_REQUEST);
-    }
-
-    String contraHash = HashCodeSha1.SHA256(password);
-
-    Usuario usuario = new Usuario(registroRequest.getMail(), contraHash);
-    Usuario savedUsuario = usuarioRepository.save(usuario);
-
-    Perfil perfil = new Perfil(registroRequest.getNombre(), registroRequest.getApellido(), fechaNacimiento, savedUsuario.getId());
-    perfilRepository.save(perfil);
-
-    try {
-        envioMailService.enviarCorreoRegistro(registroRequest.getNombre(), registroRequest.getMail());
-    } catch (MessagingException e) {
-        e.printStackTrace();
-        return new ResponseEntity<>("Error al enviar el correo de confirmación", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    
-    return new ResponseEntity<>(usuario, HttpStatus.CREATED);
-}
 
     private boolean validarPassword(String password) {
         String regex = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,16}$";
@@ -91,61 +87,63 @@ public ResponseEntity<?> register(@RequestBody RegistroRequest registroRequest) 
         return matcher.matches();
     }
 
-   public static class RegistroRequest {
-    private String mail;
-    private String password;
-    private String repetirPassword;
-    private String nombre;
-    private String apellido;
-    private String fechaNacimiento; // String type
+    // Clase interna para representar la solicitud de registro
+    public static class RegistroRequest {
+        private String mail;
+        private String password;
+        private String repetirPassword;
+        private String nombre;
+        private String apellido;
+        private String fechaNacimiento;
 
-    // Getters y Setters
-    public String getMail() {
-        return mail;
-    }
+        // Getters y Setters
+ 
+        public String getMail() {
+            return mail;
+        }
 
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
+        public void setMail(String mail) {
+            this.mail = mail;
+        }
 
-    public String getPassword() {
-        return password;
-    }
+        public String getPassword() {
+            return password;
+        }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+        public void setPassword(String password) {
+            this.password = password;
+        }
 
-    public String getRepetirPassword() {
-        return repetirPassword;
-    }
+        public String getRepetirPassword() {
+            return repetirPassword;
+        }
 
-    public void setRepetirPassword(String repetirPassword) {
-        this.repetirPassword = repetirPassword;
-    }
+        public void setRepetirPassword(String repetirPassword) {
+            this.repetirPassword = repetirPassword;
+        }
 
-    public String getNombre() {
-        return nombre;
-    }
+        public String getNombre() {
+            return nombre;
+        }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
 
-    public String getApellido() {
-        return apellido;
-    }
+        public String getApellido() {
+            return apellido;
+        }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+        public void setApellido(String apellido) {
+            this.apellido = apellido;
+        }
 
-    public String getFechaNacimiento() {
-        return fechaNacimiento;
-    }
+        public String getFechaNacimiento() {
+            return fechaNacimiento;
+        }
 
-    public void setFechaNacimiento(String fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
+        public void setFechaNacimiento(String fechaNacimiento) {
+            this.fechaNacimiento = fechaNacimiento;
+        }
     }
-}
 }

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Editar Perfil</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div>TODO write content</div>
+        <div></div>
         <form id="editarForm">
             <label for="nombre">Nombre:</label>
             <input class="botones" type="text" placeholder="Ejemplo: Matias" id="nombre" required>
@@ -16,40 +17,42 @@
             <input class="botones" type="date" id="fechanacimiento" required>
             <button type="submit">Guardar cambios</button>
         </form>
-            <script>
-        document.getElementById('editarForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const form = event.target;
-            const nombre = document.getElementById('nombre').value;
-            const apellido = document.getElementById('apellido').value;
-            const fechaNacimiento = document.getElementById('fechanacimiento').value;
+        <script>
+            document.getElementById('editarForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+                const form = event.target;
+                const nombre = document.getElementById('nombre').value;
+                const apellido = document.getElementById('apellido').value;
+                const fechaNacimiento = document.getElementById('fechanacimiento').value;
 
-            fetch('/usuarios/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    mail: mail,
-                    password: password,
-                    repetirPassword: repetirPassword,
-                    nombre: nombre,
-                    apellido: apellido,
-                    fechaNacimiento: fechaNacimiento 
-                })
-            }).then(response => {
-                if (response.ok) {
-                    form.reset(); // Limpia el formulario
-                    alert('Usuario registrado correctamente');
-                    window.location.href = 'login.html'; // Redirecciona a login.html
-                } else {
-                    response.text().then(text => {
-                        alert(text); // Muestra el mensaje de error
-                    });
-                }
+                // Obtén el ID del perfil que se va a editar (reemplaza esto con la forma en que obtienes el ID en tu aplicación)
+                const perfilId = 1; // Este es un valor de ejemplo, reemplázalo con el ID real
+
+                fetch(`/usuarios/editarperfil/${perfilId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nombre: nombre,
+                        apellido: apellido,
+                        fechaNacimiento: fechaNacimiento
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        form.reset(); // Limpia el formulario
+                        alert('Perfil editado correctamente');
+                        window.location.href = 'perfil.html'; // Redirecciona a perfil.html
+                    } else {
+                        response.text().then(text => {
+                            alert(text); // Muestra el mensaje de error
+                        });
+                    }
+                }).catch(error => {
+                    console.error('Error al editar el perfil:', error);
+                    alert('Ocurrió un error al intentar editar el perfil');
+                });
             });
-        });
-    </script>
+        </script>
     </body>
-    
 </html>

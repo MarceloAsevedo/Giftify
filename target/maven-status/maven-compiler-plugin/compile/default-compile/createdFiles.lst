@@ -10,9 +10,11 @@ Giftify\Giftify\Controllers\LoginController$LoginRequest.class
 Giftify\Giftify\Controllers\RegistroController.class
 Giftify\Giftify\Repositories\UsuarioRepository.class
 Giftify\Giftify\GiftifyApplication.class
+Giftify\Giftify\Controllers\PerfilController.class
 Giftify\Giftify\Repositories\PerfilRepository.class
 Giftify\Giftify\Models\Perfil.class
 Giftify\Giftify\Models\Usuario.class
+Giftify\Giftify\Controllers\PerfilController$PerfilRequest.class
 Giftify\Giftify\Controllers\UsuarioController.class
 Giftify\Giftify\Controllers\RegistroController$RegistroRequest.class
 Giftify\Giftify\DTOandServices\UsuarioDTO.class

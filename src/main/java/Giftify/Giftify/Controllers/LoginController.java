@@ -21,7 +21,7 @@ public class LoginController {
         Usuario usuario = usuarioRepository.findByMailAndPassword(loginRequest.getMail(), contraHash);
 
         if (usuario != null) {
-            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getMail());
+            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getMail(), usuario.getId());
             return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Usuario o contraseña incorrectos", HttpStatus.UNAUTHORIZED);
@@ -31,6 +31,15 @@ public class LoginController {
     public static class LoginRequest {
         private String mail;
         private String password;
+        private Long id;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
 
         public String getMail() {
             return mail;
