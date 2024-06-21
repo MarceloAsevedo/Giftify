@@ -1,8 +1,8 @@
 package Giftify.Giftify.Controllers;
 
 import Giftify.Giftify.DTOandServices.EnvioMailService;
-import Giftify.Giftify.Models.Perfil;
 import Giftify.Giftify.DTOandServices.UsuarioDTO;
+import Giftify.Giftify.Models.Perfil;
 import Giftify.Giftify.Models.Usuario;
 import Giftify.Giftify.Repositories.PerfilRepository;
 import Giftify.Giftify.Repositories.UsuarioRepository;
@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/registro")
 public class RegistroController {
 
     @Autowired
@@ -62,11 +62,14 @@ public class RegistroController {
         // Crear y guardar el usuario
         String contraHash = HashCodeSha1.SHA256(registroRequest.getPassword());
         Usuario usuario = new Usuario(registroRequest.getMail(), contraHash);
-        usuario = usuarioRepository.save(usuario);
-
+        
         // Crear y guardar el perfil
         Perfil perfil = new Perfil(registroRequest.getNombre(), registroRequest.getApellido(), fechaNacimiento, usuario);
-        perfil = perfilRepository.save(perfil);
+        
+        // Establecer la relación bidireccional
+        usuario.setPerfil(perfil);
+        
+        usuarioRepository.save(usuario);
 
         // Enviar correo de confirmación
         try {
@@ -77,7 +80,8 @@ public class RegistroController {
             return new ResponseEntity<>("Error al enviar el correo de confirmación", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+        // Crear respuesta exitosa
+        return ResponseEntity.ok(new UsuarioDTO(usuario.getMail())); // Usar DTO para la respuesta
     }
 
     private boolean validarPassword(String password) {
@@ -97,7 +101,7 @@ public class RegistroController {
         private String fechaNacimiento;
 
         // Getters y Setters
- 
+
         public String getMail() {
             return mail;
         }

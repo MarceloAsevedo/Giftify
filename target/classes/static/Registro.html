@@ -41,12 +41,7 @@
             const apellido = document.getElementById('apellido').value;
             const fechaNacimiento = document.getElementById('fechanacimiento').value;
 
-            if (password !== repetirPassword) {
-                alert('Las contraseñas no coinciden');
-                return;
-            }
-
-            fetch('/usuarios/register', {
+            fetch('/registro/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -69,6 +64,9 @@
                         alert(text); // Muestra el mensaje de error
                     });
                 }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al intentar registrar el usuario');
             });
         });
     </script>

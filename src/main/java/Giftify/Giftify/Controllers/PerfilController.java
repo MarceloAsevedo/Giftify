@@ -15,13 +15,13 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/usuarios") // Se encarga de gestionar el controlador
+@RequestMapping("/perfiles") // Se encarga de gestionar el controlador
 public class PerfilController {
 
     @Autowired
     private PerfilRepository perfilRepository;
 
-    @PutMapping("/editarperfil/{id}")
+    @PostMapping("/editarperfil/{id}")
     public ResponseEntity<?> editarperfil(@PathVariable Long id, @RequestBody PerfilRequest perfilRequest) {
 
         // Validar edad (mayor de 13 años)

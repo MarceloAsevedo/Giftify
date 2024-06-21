@@ -21,7 +21,7 @@ public class LoginController {
         Usuario usuario = usuarioRepository.findByMailAndPassword(loginRequest.getMail(), contraHash);
 
         if (usuario != null) {
-            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getMail(), usuario.getId());
+            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getMail(), usuario.getIdUsuario());
             return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Usuario o contraseña incorrectos", HttpStatus.UNAUTHORIZED);

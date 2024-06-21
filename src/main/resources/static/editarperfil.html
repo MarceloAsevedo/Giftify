@@ -1,35 +1,48 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Editar Perfil</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div></div>
-        <form id="editarForm">
-            <label for="nombre">Nombre:</label>
-            <input class="botones" type="text" placeholder="Ejemplo: Matias" id="nombre" required>
-            <label for="apellido">Apellido:</label>
-            <input class="botones" type="text" placeholder="Ejemplo: Fernandez" id="apellido" required>
-            <label for="fechanacimiento">Fecha de nacimiento:</label>
-            <input class="botones" type="date" id="fechanacimiento" required>
-            <button type="submit">Guardar cambios</button>
-        </form>
-        <script>
-            document.getElementById('editarForm').addEventListener('submit', function (event) {
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Perfil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div></div>
+    <form id="editarForm">
+        <label for="nombre">Nombre:</label>
+        <input class="botones" type="text" placeholder="Ejemplo: Matias" id="nombre" required>
+        <label for="apellido">Apellido:</label>
+        <input class="botones" type="text" placeholder="Ejemplo: Fernandez" id="apellido" required>
+        <label for="fechanacimiento">Fecha de nacimiento:</label>
+        <input class="botones" type="date" id="fechanacimiento" required>
+        <button type="submit">Guardar cambios</button>
+    </form>
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+            const usuarioStr = sessionStorage.getItem('usuario');
+            if (!usuarioStr) {
+                alert('No se encontró el objeto de usuario en sessionStorage');
+                return;
+            }
+
+            const usuario = JSON.parse(usuarioStr);
+            const id = usuario.id;
+
+            console.log('ID del perfil desde sessionStorage:', id); // Depuración
+            if (!id) {
+                alert('No se encontró el ID del perfil en sessionStorage');
+                return;
+            }
+
+            document.getElementById('editarForm').addEventListener('submit', function(event) {
                 event.preventDefault();
                 const form = event.target;
                 const nombre = document.getElementById('nombre').value;
                 const apellido = document.getElementById('apellido').value;
                 const fechaNacimiento = document.getElementById('fechanacimiento').value;
 
-                // Obtén el ID del perfil que se va a editar (reemplaza esto con la forma en que obtienes el ID en tu aplicación)
-                const perfilId = 1; // Este es un valor de ejemplo, reemplázalo con el ID real
-
-                fetch(`/usuarios/editarperfil/${perfilId}`, {
-                    method: 'PUT',
+                fetch(`/perfiles/editarperfil/${id}`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -53,6 +66,7 @@
                     alert('Ocurrió un error al intentar editar el perfil');
                 });
             });
-        </script>
-    </body>
+        });
+    </script>
+</body>
 </html>

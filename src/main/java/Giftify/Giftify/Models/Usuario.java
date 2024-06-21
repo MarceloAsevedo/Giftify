@@ -6,11 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-//ver uso de lombok
-// crear dto de usuario para esconder la password en el inicio de sesion
+
 @Entity
 @Table(name="usuario")
 public class Usuario {
@@ -20,46 +18,22 @@ public class Usuario {
     @Column(name="id_usuario")
     private Long idUsuario;
 
-    @Column(name="mail")
+    @Column(name="mail", nullable = false, unique = true)
     private String mail;
 
-    @Column(name="password")
+    @Column(name="password", nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Perfil perfil;
 
+    // Getters and setters
     public Long getIdUsuario() {
         return idUsuario;
     }
 
     public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
-    }
-
-    public Perfil getPerfil() {
-        return perfil;
-    }
-
-    public void setPerfil(Perfil perfil) {
-        this.perfil = perfil;
-    }
-
-    public Usuario(Long idUsuario, String mail, String password, Perfil perfil) {
-        this.idUsuario = idUsuario;
-        this.mail = mail;
-        this.password = password;
-        this.perfil = perfil;
-    }
-    
-    
-    // Getters and setters
-    public Long getId() {
-        return idUsuario;
-    }
-
-    public void setId(Long id) {
-      idUsuario = id;
     }
 
     public String getMail() {
@@ -78,10 +52,19 @@ public class Usuario {
         this.password = password;
     }
 
-    public Usuario(Long id, String mail, String password) {
-        idUsuario = id;
+    public Perfil getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(Perfil perfil) {
+        this.perfil = perfil;
+    }
+
+    public Usuario(Long idUsuario, String mail, String password, Perfil perfil) {
+        this.idUsuario = idUsuario;
         this.mail = mail;
         this.password = password;
+        this.perfil = perfil;
     }
 
     public Usuario() {}
@@ -89,9 +72,5 @@ public class Usuario {
     public Usuario(String mail, String password) {
         this.mail = mail;
         this.password = password;
-    }
-
-    public Usuario getUsuario() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
