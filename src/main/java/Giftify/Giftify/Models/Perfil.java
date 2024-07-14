@@ -1,13 +1,8 @@
 package Giftify.Giftify.Models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -27,22 +22,24 @@ public class Perfil {
 
     @Column(name = "fecha_nacimiento", nullable = false)
     private LocalDate fechaNacimiento;
-    
+
     @Column(name = "foto_perfil", nullable = false)
     private String fotoPerfil;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
+    @JsonBackReference
     private Usuario usuario;
 
-    public Perfil() {}
+    public Perfil() {
+    }
 
-    public Perfil(String nombre, String apellido, LocalDate fechaNacimiento, Usuario usuario, String fp) {
+    public Perfil(String nombre, String apellido, LocalDate fechaNacimiento, Usuario usuario, String fotoPerfil) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
+        this.fotoPerfil = fotoPerfil;
         this.usuario = usuario;
-        fotoPerfil=fp;
     }
 
     // Getters and setters
@@ -93,5 +90,4 @@ public class Perfil {
     public void setFotoPerfil(String fotoPerfil) {
         this.fotoPerfil = fotoPerfil;
     }
-    
 }

@@ -15,15 +15,23 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/perfiles") // Se encarga de gestionar el controlador
+@RequestMapping("/perfiles")
 public class PerfilController {
 
     @Autowired
     private PerfilRepository perfilRepository;
 
-    @PostMapping("/editarperfil/{id}")
-    public ResponseEntity<?> editarperfil(@PathVariable Long id, @RequestBody PerfilRequest perfilRequest) {
+    @GetMapping("/perfil/{id}")
+    public ResponseEntity<?> obtenerPerfil(@PathVariable Long id) {
+        Optional<Perfil> optionalPerfil = perfilRepository.findById(id);
+        if (!optionalPerfil.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado con ID: " + id, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(optionalPerfil.get(), HttpStatus.OK);
+    }
 
+    @PostMapping("/editarperfil/{id}")
+    public ResponseEntity<?> editarPerfil(@PathVariable Long id, @RequestBody PerfilRequest perfilRequest) {
         // Validar edad (mayor de 13 años)
         LocalDate fechaNacimiento;
         try {
@@ -48,6 +56,7 @@ public class PerfilController {
         perfilExistente.setNombre(perfilRequest.getNombre());
         perfilExistente.setApellido(perfilRequest.getApellido());
         perfilExistente.setFechaNacimiento(fechaNacimiento);
+        perfilExistente.setFotoPerfil(perfilRequest.getFotoPerfil());
 
         // Guardar el perfil actualizado
         perfilRepository.save(perfilExistente);
@@ -60,8 +69,8 @@ public class PerfilController {
     public static class PerfilRequest {
         private String nombre;
         private String apellido;
-        private String fechaNacimiento; // String type
-        public PerfilRequest() {
-        }
+        private String fechaNacimiento;
+        private String fotoPerfil; // Agregar el campo fotoPerfil
     }
 }
+

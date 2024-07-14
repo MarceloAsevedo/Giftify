@@ -1,13 +1,7 @@
 package Giftify.Giftify.Models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="usuario")
@@ -15,17 +9,44 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_usuario")
+    @Column(name = "id_usuario")
     private Long idUsuario;
 
-    @Column(name="mail", nullable = false, unique = true)
+    @Column(name = "mail", nullable = false)
     private String mail;
 
-    @Column(name="password", nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Perfil perfil;
+
+    
+     @Override
+    public String toString() {
+        return "Usuario{" +
+                "idUsuario=" + idUsuario +
+                ", mail='" + mail + '\'' +
+                ", password='" + password + '\'' +
+                ", perfil=" + (perfil != null ? perfil.getIdPerfil() : "null") +
+                '}';
+    }
+    
+   public Usuario(String mail, String contraHash) {
+    this.mail = mail;
+    this.password = contraHash;
+}
+
+    public Usuario() {
+    }
+
+    public Usuario(Long idUsuario, String mail, String password, Perfil perfil) {
+        this.idUsuario = idUsuario;
+        this.mail = mail;
+        this.password = password;
+        this.perfil = perfil;
+    }
 
     // Getters and setters
     public Long getIdUsuario() {
@@ -58,19 +79,5 @@ public class Usuario {
 
     public void setPerfil(Perfil perfil) {
         this.perfil = perfil;
-    }
-
-    public Usuario(Long idUsuario, String mail, String password, Perfil perfil) {
-        this.idUsuario = idUsuario;
-        this.mail = mail;
-        this.password = password;
-        this.perfil = perfil;
-    }
-
-    public Usuario() {}
-
-    public Usuario(String mail, String password) {
-        this.mail = mail;
-        this.password = password;
     }
 }
