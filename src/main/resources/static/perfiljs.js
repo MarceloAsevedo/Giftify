@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             console.log('Datos del perfil:', data); // Depuración
             document.querySelector('.profile-img').src = data.fotoPerfil;
-            document.querySelector('.profile h1').textContent = `${data.nombre} ${data.apellido}`;
+            document.querySelector('.profile .nombreCompleto').textContent = `${data.nombre} ${data.apellido}`;
         })
         .catch(error => {
             console.error('Error:', error);
