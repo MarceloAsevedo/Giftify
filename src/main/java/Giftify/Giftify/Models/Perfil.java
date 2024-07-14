@@ -25,6 +25,12 @@ public class Perfil {
 
     @Column(name = "foto_perfil", nullable = false)
     private String fotoPerfil;
+    
+    @Column(name = "descripcion", nullable = true)
+    private String descripcion;
+    
+    @Column(name = "link", nullable = true)
+    private String link;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
@@ -42,6 +48,17 @@ public class Perfil {
         this.usuario = usuario;
     }
 
+    public Perfil(Long idPerfil, String nombre, String apellido, LocalDate fechaNacimiento, String fotoPerfil, String descripcion, String link, Usuario usuario) {
+        this.idPerfil = idPerfil;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fechaNacimiento = fechaNacimiento;
+        this.fotoPerfil = fotoPerfil;
+        this.descripcion = descripcion;
+        this.link = link;
+        this.usuario = usuario;
+    }
+
     // Getters and setters
     public Long getIdPerfil() {
         return idPerfil;
@@ -49,6 +66,22 @@ public class Perfil {
 
     public void setIdPerfil(Long idPerfil) {
         this.idPerfil = idPerfil;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getNombre() {
