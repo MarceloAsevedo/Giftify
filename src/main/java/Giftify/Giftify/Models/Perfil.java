@@ -27,6 +27,9 @@ public class Perfil {
 
     @Column(name = "fecha_nacimiento", nullable = false)
     private LocalDate fechaNacimiento;
+    
+    @Column(name = "foto_perfil", nullable = false)
+    private String fotoPerfil;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
@@ -34,11 +37,12 @@ public class Perfil {
 
     public Perfil() {}
 
-    public Perfil(String nombre, String apellido, LocalDate fechaNacimiento, Usuario usuario) {
+    public Perfil(String nombre, String apellido, LocalDate fechaNacimiento, Usuario usuario, String fp) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
         this.usuario = usuario;
+        fotoPerfil=fp;
     }
 
     // Getters and setters
@@ -81,4 +85,13 @@ public class Perfil {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
+    
 }

@@ -7,6 +7,11 @@ import Giftify.Giftify.Models.Usuario;
 import Giftify.Giftify.Repositories.PerfilRepository;
 import Giftify.Giftify.Repositories.UsuarioRepository;
 import jakarta.mail.MessagingException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
@@ -16,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/registro")
@@ -31,7 +37,7 @@ public class RegistroController {
     private EnvioMailService envioMailService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegistroRequest registroRequest) {
+    public ResponseEntity<?> register(@ModelAttribute RegistroRequest registroRequest, @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil) {
 
         // Verificar si el correo ya está en uso
         if (usuarioRepository.findByMail(registroRequest.getMail()) != null) {
@@ -59,12 +65,22 @@ public class RegistroController {
             return new ResponseEntity<>("La contraseña debe tener entre 8 y 16 caracteres, incluir al menos una mayúscula, un número y un carácter especial.", HttpStatus.BAD_REQUEST);
         }
 
+        // Guardar la foto de perfil si se ha subido una
+        String fotoPerfilUrl = "static/perfiles/sinfoto.png"; // URL por defecto
+        if (fotoPerfil != null && !fotoPerfil.isEmpty()) {
+            try {
+                fotoPerfilUrl = guardarFotoPerfil(fotoPerfil);
+            } catch (IOException e) {
+                return new ResponseEntity<>("Error al guardar la foto de perfil", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
         // Crear y guardar el usuario
         String contraHash = HashCodeSha1.SHA256(registroRequest.getPassword());
         Usuario usuario = new Usuario(registroRequest.getMail(), contraHash);
         
         // Crear y guardar el perfil
-        Perfil perfil = new Perfil(registroRequest.getNombre(), registroRequest.getApellido(), fechaNacimiento, usuario);
+        Perfil perfil = new Perfil(registroRequest.getNombre(), registroRequest.getApellido(), fechaNacimiento, usuario, fotoPerfilUrl);
         
         // Establecer la relación bidireccional
         usuario.setPerfil(perfil);
@@ -81,7 +97,9 @@ public class RegistroController {
         }
 
         // Crear respuesta exitosa
-        return ResponseEntity.ok(new UsuarioDTO(usuario.getMail())); // Usar DTO para la respuesta
+      UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getMail()); // Usar DTO para la respuesta
+return ResponseEntity.ok()
+        .body(new ApiResponse(true, "Registro exitoso", usuarioDTO));
     }
 
     private boolean validarPassword(String password) {
@@ -89,6 +107,15 @@ public class RegistroController {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
+    }
+
+    private String guardarFotoPerfil(MultipartFile fotoPerfil) throws IOException {
+        String directory = "static/perfiles/";
+        String filename = fotoPerfil.getOriginalFilename();
+        Path filepath = Paths.get(directory, filename);
+        Files.createDirectories(filepath.getParent());
+        Files.write(filepath, fotoPerfil.getBytes());
+        return filepath.toString();
     }
 
     // Clase interna para representar la solicitud de registro
