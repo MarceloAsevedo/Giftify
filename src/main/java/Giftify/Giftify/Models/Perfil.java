@@ -1,12 +1,14 @@
 package Giftify.Giftify.Models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
-@Table(name="perfil")
+@Table(name = "perfil")
 public class Perfil {
 
     @Id
@@ -25,10 +27,10 @@ public class Perfil {
 
     @Column(name = "foto_perfil", nullable = false)
     private String fotoPerfil;
-    
+
     @Column(name = "descripcion", nullable = true)
     private String descripcion;
-    
+
     @Column(name = "link", nullable = true)
     private String link;
 
@@ -36,6 +38,10 @@ public class Perfil {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonBackReference
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "perfil", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Publicacion> publicaciones;
 
     public Perfil() {
     }
@@ -122,5 +128,13 @@ public class Perfil {
 
     public void setFotoPerfil(String fotoPerfil) {
         this.fotoPerfil = fotoPerfil;
+    }
+
+    public List<Publicacion> getPublicaciones() {
+        return publicaciones;
+    }
+
+    public void setPublicaciones(List<Publicacion> publicaciones) {
+        this.publicaciones = publicaciones;
     }
 }

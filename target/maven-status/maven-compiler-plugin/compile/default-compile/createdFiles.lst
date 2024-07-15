@@ -7,8 +7,11 @@ Giftify\Giftify\Controllers\LoginController.class
 Giftify\Giftify\Controllers\ErrorControllerA.class
 Giftify\Giftify\Repositories\UsuarioRepository.class
 Giftify\Giftify\Controllers\PerfilController$PerfilRequest.class
+Giftify\Giftify\Controllers\PublicacionController.class
 Giftify\Giftify\DTOandServices\UsuarioDTO.class
+Giftify\Giftify\Repositories\PublicacionRepository.class
 Giftify\Giftify\Config\MailConfig.class
+Giftify\Giftify\Models\Publicacion.class
 Giftify\Giftify\Controllers\UsuarioController$CambioPasswordRequest.class
 Giftify\Giftify\Controllers\LoginController$LoginRequest.class
 Giftify\Giftify\Controllers\RegistroController.class

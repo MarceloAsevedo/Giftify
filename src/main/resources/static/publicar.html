@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giftify - Publicar</title>
+    <link rel="stylesheet" href="menuymascss.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <!-- SVG del logo -->
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+      <line x1="4" x2="20" y1="12" y2="12"></line>
+      <line x1="4" x2="20" y1="6" y2="6"></line>
+      <line x1="4" x2="20" y1="18" y2="18"></line>
+    </svg>
+  </header>
+  <div class="container">
+    <aside class="sidebar">
+     <nav>
+        <button class="button" onclick="location.href='perfil.html'">Perfil</button>
+        <button class="button" onclick="location.href='publicar.html'">Publicar</button>
+        <button class="button" onclick="location.href='perfil.html'">Buscar</button>
+        <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
+        <button class="button" onclick="location.href='perfil.html'">Mis Listas</button>
+        <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+        <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
+        <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
+        <button class="button" id="logoutButton">Cerrar Sesión</button>
+      </nav>
+    </aside>
+    <div class="contenedor">
+        <div class="form-section">
+            <h1>GIFTIFY</h1>
+            <h2>Nueva Publicación</h2>
+            <form id="publicacionForm" enctype="multipart/form-data">
+                <label for="descripcionPublicacion">Descripción de la Publicación:</label>
+                <textarea id="descripcionPublicacion" name="descripcionPublicacion" rows="4" required></textarea>
+
+                <label for="fotoPublicacion">Foto de la Publicación:</label>
+                <input type="file" id="fotoPublicacion" name="fotoPublicacion" accept="image/*">
+
+                <input type="hidden" id="idPerfil" name="idPerfil">
+
+                <button type="submit">Publicar</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const usuarioStr = sessionStorage.getItem('usuario');
+            if (!usuarioStr) {
+                alert('No se encontró el objeto de usuario en sessionStorage');
+                return;
+            }
+            const usuario = JSON.parse(usuarioStr);
+            const idPerfil = usuario.id;
+            if (!idPerfil) {
+                alert('No se encontró el ID del perfil en sessionStorage');
+                return;
+            }
+            document.getElementById('idPerfil').value = idPerfil;
+        });
+
+        document.getElementById('publicacionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+          
+
+            fetch('/publicaciones/nueva', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json().then(data => {
+                if (response.ok) {
+                    form.reset(); // Limpia el formulario
+                    alert('Publicación exitosa');
+                    window.location.href = 'inicio.html'; // Redirecciona a inicio.html
+                } else {
+                    alert(data.message || 'Error al publicar'); // Muestra el mensaje de error
+                }
+            })).catch(error => {
+                console.error('Error:', error);
+                alert('Error en la solicitud');
+            });
+        });
+    </script>
+</body>
+</html>
