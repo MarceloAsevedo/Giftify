@@ -23,3 +23,4 @@ Giftify\Giftify\Models\Usuario.class
 Giftify\Giftify\Controllers\UsuarioController.class
 Giftify\Giftify\Controllers\RegistroController$RegistroRequest.class
 Giftify\Giftify\Controllers\IndexController.class
+Giftify\Giftify\DTOandServices\PublicacionDTO.class

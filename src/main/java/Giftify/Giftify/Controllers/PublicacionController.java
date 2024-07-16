@@ -1,9 +1,11 @@
 package Giftify.Giftify.Controllers;
 
+
 import Giftify.Giftify.Models.Publicacion;
 import Giftify.Giftify.Models.Perfil;
 import Giftify.Giftify.Repositories.PublicacionRepository;
 import Giftify.Giftify.Repositories.PerfilRepository;
+import Giftify.Giftify.DTOandServices.PublicacionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/publicaciones")
@@ -62,7 +66,21 @@ public class PublicacionController {
 
         return new ResponseEntity<>(publicacion, HttpStatus.CREATED);
     }
-
+    
+    @GetMapping("/todas")
+    public ResponseEntity<?> obtenerPublicaciones() {
+        List<PublicacionDTO> publicaciones = publicacionRepository.findAll().stream()
+                .map(publicacion -> new PublicacionDTO(
+                        publicacion.getDescripcionPublicacion(),
+                        publicacion.getFechaHoraPublicado(),
+                        publicacion.getFotoPublicacion(),
+                        publicacion.getPerfil().getNombre(),
+                        publicacion.getPerfil().getApellido(),
+                        publicacion.getPerfil().getFotoPerfil()// esto deberiiiia traer el nombre del perfil, vamo a ve, si anda hacer lo mismo con el apellido tambien asi tre los 2 juntos, y la foto igual
+                ))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(publicaciones, HttpStatus.OK);
+    }
     private String guardarFotoPublicacion(MultipartFile fotoPublicacion) throws IOException {
         String directory = "static/publicaciones/";
         String filename = fotoPublicacion.getOriginalFilename();
