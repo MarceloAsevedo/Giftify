@@ -16,17 +16,18 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/perfiles")
+@RequestMapping("/perfil")
 public class PerfilController {
 
     @Autowired
     private PerfilRepository perfilRepository;
 
-    @GetMapping("/perfil/{id}")
+    @GetMapping("/verperfil/{id}")
     public ResponseEntity<?> obtenerPerfil(@PathVariable Long id) {
         Optional<Perfil> optionalPerfil = perfilRepository.findById(id);
         if (!optionalPerfil.isPresent()) {
@@ -88,6 +89,33 @@ public ResponseEntity<?> editarPerfil(@PathVariable Long id,
 
     return new ResponseEntity<>(perfilExistente, HttpStatus.OK);
 }
+//AMIGOS
+    @PostMapping("/{id}/amigos")
+    public ResponseEntity<?> agregarAmigo(@PathVariable Long id, @RequestParam Long amigoId) {
+        Optional<Perfil> perfilOpt = perfilRepository.findById(id);
+        Optional<Perfil> amigoOpt = perfilRepository.findById(amigoId);
+
+        if (perfilOpt.isPresent() && amigoOpt.isPresent()) {
+            Perfil perfil = perfilOpt.get();
+            Perfil amigo = amigoOpt.get();
+
+            perfil.getAmigos().add(amigo);
+            amigo.getAmigos().add(perfil);
+
+            perfilRepository.save(perfil);
+            perfilRepository.save(amigo);
+
+            return new ResponseEntity<>(perfil, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Perfil o amigo no encontrado", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<?> buscarPerfiles(@RequestParam String query, @RequestParam Long perfilId) {
+        List<Perfil> perfiles = perfilRepository.buscarPerfiles(query, perfilId);
+        return new ResponseEntity<>(perfiles, HttpStatus.OK);
+    }
 
 private String guardarFotoPerfil(MultipartFile fotoPerfil) throws IOException {
     String directory = "static/perfiles/";

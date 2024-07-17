@@ -55,6 +55,67 @@
        
         <button type="submit">Guardar cambios</button>
     </form>
-     <script src="perfiljs.js"></script>
+      <script>
+         document.addEventListener('DOMContentLoaded', function() {
+    const usuarioStr = sessionStorage.getItem('usuario');
+    if (!usuarioStr) {
+        alert('No se encontró el objeto de usuario en sessionStorage');
+        return;
+    }
+
+    const usuario = JSON.parse(usuarioStr);
+    const id = usuario.id;
+
+    if (!id) {
+        alert('No se encontró el ID del perfil en sessionStorage');
+        return;
+    }
+
+
+    // Solo agrega el event listener si el elemento existe
+    const editarForm = document.getElementById('editarForm');
+    if (editarForm) {
+        editarForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const fechaNacimiento = document.getElementById('fechanacimiento').value;
+            const fotoPerfil = document.getElementById('fotoPerfil').files[0];
+            const descripcion = document.getElementById('descripcion').value;
+            const link = document.getElementById('link').value;
+
+            const formData = new FormData();
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('fechaNacimiento', fechaNacimiento);
+            formData.append('link', link);
+            formData.append('descripcion', descripcion);
+            if (fotoPerfil) {
+                formData.append('fotoPerfil', fotoPerfil);
+            }
+
+            fetch(`/perfil/editarperfil/${id}`, {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    alert('Perfil editado correctamente');
+                    window.location.href = 'perfil.html'; // Redirecciona a perfil.html
+                } else {
+                    response.text().then(text => {
+                        alert(text); // Muestra el mensaje de error
+                    });
+                }
+            }).catch(error => {
+                console.error('Error al editar el perfil:', error);
+                alert('Ocurrió un error al intentar editar el perfil');
+            });
+        });
+    } else {
+        console.warn('El formulario de edición no se encontró en el DOM');
+    }
+});
+      </script>
+      <script src="cerrarSesion.js"></script>
 </body>
 </html>

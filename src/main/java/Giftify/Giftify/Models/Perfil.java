@@ -1,11 +1,14 @@
 package Giftify.Giftify.Models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "perfil")
@@ -42,6 +45,15 @@ public class Perfil {
     @OneToMany(mappedBy = "perfil", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Publicacion> publicaciones;
+    
+       @ManyToMany
+    @JoinTable(
+        name = "amigos",
+        joinColumns = @JoinColumn(name = "perfil_id"),
+        inverseJoinColumns = @JoinColumn(name = "amigo_id")
+    )
+    @JsonIgnore
+    private Set<Perfil> amigos = new HashSet<>();
 
     public Perfil() {
     }
@@ -137,4 +149,13 @@ public class Perfil {
     public void setPublicaciones(List<Publicacion> publicaciones) {
         this.publicaciones = publicaciones;
     }
+
+    public Set<Perfil> getAmigos() {
+        return amigos;
+    }
+
+    public void setAmigos(Set<Perfil> amigos) {
+        this.amigos = amigos;
+    }
+    
 }

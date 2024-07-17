@@ -29,10 +29,10 @@
         <button class="button" onclick="location.href='inicio.html'">Inicio</button>
         <button class="button" onclick="location.href='perfil.html'">Perfil</button>
         <button class="button" onclick="location.href='publicar.html'">Publicar</button>
-        <button class="button" onclick="location.href='perfil.html'">Buscar</button>
-        <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
-        <button class="button" onclick="location.href='perfil.html'">Mis Listas</button>
-        <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+        <button class="button" onclick="location.href='buscar.html'">Buscar</button>
+        <button class="button" onclick="location.href='mensajes.html'">Mensajes</button>
+        <button class="button" onclick="location.href='mislistas.html'">Mis Listas</button>
+        <button class="button" onclick="location.href='notificaciones.html'">Notificaciones</button>
         <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
         <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
         <button class="button" id="logoutButton">Cerrar Sesión</button>
@@ -40,7 +40,7 @@
     </aside>
     <main class="main-content">
       <section class="profile">
-        <img src="/placeholder.svg" alt="Profile Image" class="profile-img">
+        <img src="/static/placeholder.svg" alt="Profile Image" class="profile-img">
         <h1 class="nombreCompleto">Nombre Apellido</h1>
         <p class="descripcionPerfil">Acá pondríamos una descripción si tuviéramos una</p>
         <a class="linkPerfil" href="#">www.unlinkqueponga.com</a>
@@ -49,15 +49,15 @@
         <h2>Tus deseos</h2>
         <div class="wish-list">
           <div class="wish-item">
-            <img src="/placeholder.svg" alt="Wish Image" class="wish-img">
+            <img src="/static/placeholder.svg" alt="Wish Image" class="wish-img">
             <span>Regalo 1</span>
           </div>
           <div class="wish-item">
-            <img src="/placeholder.svg" alt="Wish Image" class="wish-img">
+            <img src="/static/placeholder.svg" alt="Wish Image" class="wish-img">
             <span>Regalo 2</span>
           </div>
           <div class="wish-item">
-            <img src="/placeholder.svg" alt="Wish Image" class="wish-img">
+            <img src="/static/placeholder.svg" alt="Wish Image" class="wish-img">
             <span>Regalo 3</span>
           </div>
         </div>
@@ -66,14 +66,49 @@
       <section class="publications">
         <h2>Tus publicaciones</h2>
         <div class="publication-list">
-          <img src="/placeholder.svg" alt="Publication Image" class="publication-img">
-          <img src="/placeholder.svg" alt="Publication Image" class="publication-img">
-          <img src="/placeholder.svg" alt="Publication Image" class="publication-img">
+          <img src="/static/placeholder.svg" alt="Publication Image" class="publication-img">
+          <img src="/static/placeholder.svg" alt="Publication Image" class="publication-img">
+          <img src="/static/placeholder.svg" alt="Publication Image" class="publication-img">
         </div>
       </section>
     </main>
   </div>
-  <script src="perfiljs.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const usuarioStr = sessionStorage.getItem('usuario');
+      if (!usuarioStr) {
+          alert('No se encontró el objeto de usuario en sessionStorage');
+          return;
+      }
+
+      const usuario = JSON.parse(usuarioStr);
+      const id = usuario.id;
+
+      if (!id) {
+          alert('No se encontró el ID del perfil en sessionStorage');
+          return;
+      }
+
+      fetch(`http://localhost:8082/perfil/verperfil/${id}`)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Error al obtener los datos del perfil');
+              }
+              return response.json();
+          })
+          .then(data => {
+              console.log('Datos del perfil:', data); // Depuración
+              document.querySelector('.profile-img').src = data.fotoPerfil || '/static/placeholder.svg';
+              document.querySelector('.profile .nombreCompleto').textContent = `${data.nombre} ${data.apellido}`;
+              document.querySelector('.descripcionPerfil').textContent = data.descripcion || 'No hay descripción disponible';
+              document.querySelector('.linkPerfil').textContent = data.link || 'No hay enlace disponible';
+              document.querySelector('.linkPerfil').href = data.link || '#';
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+    });
+  </script>
   <script src="cerrarSesion.js"></script>
 </body>
 </html>

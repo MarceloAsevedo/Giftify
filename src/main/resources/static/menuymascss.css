@@ -116,3 +116,34 @@ a {
     .publicacion-fecha {
       margin-top: 10px;
     }
+    
+    .search-container {
+      margin: 20px;
+    }
+    .search-result {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .search-result img {
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+    .search-result .profile-info {
+      flex-grow: 1;
+    }
+    .search-result .add-friend-button {
+      background-color: #f00;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .search-result .add-friend-button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }

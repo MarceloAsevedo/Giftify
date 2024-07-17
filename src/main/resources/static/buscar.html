@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscar Perfiles</title>
+  <link rel="stylesheet" href="menuymascss.css">
+
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+        <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+        <path d="M12 8v13"></path>
+        <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+        <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+      </svg>
+      <span>LOGO</span>
+    </div>
+  </header>
+  <div class="container">
+        <aside class="sidebar">
+     <nav>
+         <button class="button" onclick="location.href='inicio.html'">Inicio</button>
+        <button class="button" onclick="location.href='perfil.html'">Perfil</button>
+        <button class="button" onclick="location.href='publicar.html'">Publicar</button>
+        <button class="button" onclick="location.href='buscar.html'">Buscar</button>
+        <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
+        <button class="button" onclick="location.href='perfil.html'">Mis Listas</button>
+        <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+        <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
+        <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
+        <button class="button" id="logoutButton">Cerrar Sesión</button>
+      </nav>
+    </aside>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Buscar perfiles...">
+      <div id="searchResults"></div>
+    </div>
+  </div>
+ <script src="buscarperfil.js"></script>
+ <script src="cerrarSesion.js"></script>
+</body>
+</html>
