@@ -18,6 +18,7 @@ import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -37,59 +38,59 @@ public class PerfilController {
     }
 
     @PostMapping("/editarperfil/{id}")
-public ResponseEntity<?> editarPerfil(@PathVariable Long id,
-                                      @RequestParam("nombre") String nombre,
-                                      @RequestParam("apellido") String apellido,
-                                      @RequestParam("fechaNacimiento") String fechaNacimiento,
-                                      @RequestParam("link") String link,
-                                      @RequestParam("descripcion") String descripcion,
-                                      @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil) {
-    // Validar edad (mayor de 13 años)
-    LocalDate fechaNac;
-    try {
-        fechaNac = LocalDate.parse(fechaNacimiento);
-    } catch (DateTimeParseException e) {
-        return new ResponseEntity<>("Formato de fecha de nacimiento incorrecto", HttpStatus.BAD_REQUEST);
-    }
-
-    if (Period.between(fechaNac, LocalDate.now()).getYears() < 13) {
-        return new ResponseEntity<>("El usuario debe ser mayor de 13 años", HttpStatus.BAD_REQUEST);
-    }
-
-    // Buscar el perfil existente por ID
-    Optional<Perfil> optionalPerfilExistente = perfilRepository.findById(id);
-    if (!optionalPerfilExistente.isPresent()) {
-        return new ResponseEntity<>("Perfil no encontrado con ID: " + id, HttpStatus.NOT_FOUND);
-    }
-
-    Perfil perfilExistente = optionalPerfilExistente.get();
-
-    // Actualizar los datos del perfil
-    perfilExistente.setNombre(nombre);
-    perfilExistente.setApellido(apellido);
-    perfilExistente.setFechaNacimiento(fechaNac);
-    perfilExistente.setLink(link);
-    perfilExistente.setDescripcion(descripcion);
-
-    // Manejar la foto de perfil
-    if (fotoPerfil != null && !fotoPerfil.isEmpty()) {
+    public ResponseEntity<?> editarPerfil(@PathVariable Long id,
+                                          @RequestParam("nombre") String nombre,
+                                          @RequestParam("apellido") String apellido,
+                                          @RequestParam("fechaNacimiento") String fechaNacimiento,
+                                          @RequestParam("link") String link,
+                                          @RequestParam("descripcion") String descripcion,
+                                          @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil) {
+        // Validar edad (mayor de 13 años)
+        LocalDate fechaNac;
         try {
-            String fotoPerfilUrl = guardarFotoPerfil(fotoPerfil);
-            perfilExistente.setFotoPerfil(fotoPerfilUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Error al guardar la foto de perfil", HttpStatus.INTERNAL_SERVER_ERROR);
+            fechaNac = LocalDate.parse(fechaNacimiento);
+        } catch (DateTimeParseException e) {
+            return new ResponseEntity<>("Formato de fecha de nacimiento incorrecto", HttpStatus.BAD_REQUEST);
         }
-    } else {
-        perfilExistente.setFotoPerfil("http://localhost:8082/static/perfiles/sinfoto.png");
+
+        if (Period.between(fechaNac, LocalDate.now()).getYears() < 13) {
+            return new ResponseEntity<>("El usuario debe ser mayor de 13 años", HttpStatus.BAD_REQUEST);
+        }
+
+        // Buscar el perfil existente por ID
+        Optional<Perfil> optionalPerfilExistente = perfilRepository.findById(id);
+        if (!optionalPerfilExistente.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado con ID: " + id, HttpStatus.NOT_FOUND);
+        }
+
+        Perfil perfilExistente = optionalPerfilExistente.get();
+
+        // Actualizar los datos del perfil
+        perfilExistente.setNombre(nombre);
+        perfilExistente.setApellido(apellido);
+        perfilExistente.setFechaNacimiento(fechaNac);
+        perfilExistente.setLink(link);
+        perfilExistente.setDescripcion(descripcion);
+
+        // Manejar la foto de perfil
+        if (fotoPerfil != null && !fotoPerfil.isEmpty()) {
+            try {
+                String fotoPerfilUrl = guardarFotoPerfil(fotoPerfil);
+                perfilExistente.setFotoPerfil(fotoPerfilUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>("Error al guardar la foto de perfil", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            perfilExistente.setFotoPerfil("http://localhost:8082/static/perfiles/sinfoto.png");
+        }
+
+        // Guardar el perfil actualizado
+        perfilRepository.save(perfilExistente);
+
+        return new ResponseEntity<>(perfilExistente, HttpStatus.OK);
     }
-
-    // Guardar el perfil actualizado
-    perfilRepository.save(perfilExistente);
-
-    return new ResponseEntity<>(perfilExistente, HttpStatus.OK);
-}
-//AMIGOS
+    //AMIGOS
     @PostMapping("/{id}/amigos")
     public ResponseEntity<?> agregarAmigo(@PathVariable Long id, @RequestParam Long amigoId) {
         Optional<Perfil> perfilOpt = perfilRepository.findById(id);
@@ -117,17 +118,45 @@ public ResponseEntity<?> editarPerfil(@PathVariable Long id,
         return new ResponseEntity<>(perfiles, HttpStatus.OK);
     }
 
-private String guardarFotoPerfil(MultipartFile fotoPerfil) throws IOException {
-    String directory = "static/perfiles/";
-    String filename = fotoPerfil.getOriginalFilename();
-    Path filepath = Paths.get(directory, filename);
-    Files.createDirectories(filepath.getParent());
-    Files.write(filepath, fotoPerfil.getBytes());
+    @GetMapping("/{id}/amigos")
+    public ResponseEntity<?> obtenerAmigos(@PathVariable Long id) {
+        Optional<Perfil> optionalPerfil = perfilRepository.findById(id);
+        if (!optionalPerfil.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado con ID: " + id, HttpStatus.NOT_FOUND);
+        }
+        Perfil perfil = optionalPerfil.get();
+        Set<Perfil> amigos = perfil.getAmigos();
+        return new ResponseEntity<>(amigos, HttpStatus.OK);
+    }
+@GetMapping("/{id}/esamigo/{amigoId}")
+public ResponseEntity<?> esAmigo(@PathVariable Long id, @PathVariable Long amigoId) {
+    Optional<Perfil> perfilOpt = perfilRepository.findById(id);
+    Optional<Perfil> amigoOpt = perfilRepository.findById(amigoId);
 
-    // Construir la URL completa
-    String baseUrl = "http://localhost:8082";
-    return baseUrl + "/" + directory + filename;
+    if (perfilOpt.isPresent() && amigoOpt.isPresent()) {
+        Perfil perfil = perfilOpt.get();
+        Perfil amigo = amigoOpt.get();
+
+        boolean sonAmigos = perfil.getAmigos().contains(amigo);
+
+        return new ResponseEntity<>(sonAmigos, HttpStatus.OK);
+    }
+
+    return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
 }
+
+    private String guardarFotoPerfil(MultipartFile fotoPerfil) throws IOException {
+        String directory = "static/perfiles/";
+        String filename = fotoPerfil.getOriginalFilename();
+        Path filepath = Paths.get(directory, filename);
+        Files.createDirectories(filepath.getParent());
+        Files.write(filepath, fotoPerfil.getBytes());
+
+        // Construir la URL completa
+        String baseUrl = "http://localhost:8082";
+        return baseUrl + "/" + directory + filename;
+    }
+
     @Getter
     @Setter
     public static class PerfilRequest {
@@ -139,4 +168,3 @@ private String guardarFotoPerfil(MultipartFile fotoPerfil) throws IOException {
         private String descripcion;
     }
 }
-

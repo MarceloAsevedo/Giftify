@@ -29,8 +29,10 @@ document.getElementById('searchInput').addEventListener('input', function() {
                         <div class="profile-info">
                             <p>${perfil.nombre} ${perfil.apellido}</p>
                         </div>
-                        <button class="add-friend-button" onclick="agregarAmigo(${perfil.idPerfil}, this)">Agregar amigo</button>
                     `;
+                    resultDiv.addEventListener('click', () => {
+                        window.location.href = `otroperfil.html?id=${perfil.idPerfil}`;
+                    });
                     searchResultsDiv.appendChild(resultDiv);
                 }
             });
@@ -40,24 +42,3 @@ document.getElementById('searchInput').addEventListener('input', function() {
     }
 });
 
-function agregarAmigo(amigoId, button) {
-    const usuarioStr = sessionStorage.getItem('usuario');
-    const usuario = JSON.parse(usuarioStr);
-    const perfilId = usuario.id;
-
-    fetch(`http://localhost:8082/perfil/${perfilId}/amigos`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `amigoId=${amigoId}`
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Amigo agregado con éxito');
-            button.disabled = true;
-        } else {
-            alert('Error al agregar amigo');
-        }
-    });
-}
