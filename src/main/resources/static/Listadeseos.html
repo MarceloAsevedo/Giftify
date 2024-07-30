@@ -49,7 +49,8 @@
             <h2>Crear nueva lista de deseos</h2>
             <button class="btn btn-primary" onclick="location.href='crearlistadeseo.html'">Crear nueva lista</button>
 
-           
+            <h2>Agregar nuevo deseo a una lista</h2>
+            <button class="btn btn-primary" onclick="location.href='crearlistadeseo.html'">Agregar nuevo deseo</button>
         </main>
     </div>
 
@@ -89,6 +90,13 @@
                         div.classList.add('lista-deseos');
                         div.innerHTML = `
                             <h3 class="nombre-lista" data-id="${lista.idLista}" style="cursor: pointer;">${lista.nombreLista}</h3>
+                            <button class="editar btn btn-warning" onclick="mostrarFormularioEdicionLista(${lista.idLista}, '${lista.nombreLista}')">Editar</button>
+                            <button class="eliminar btn btn-danger" onclick="eliminarLista(${lista.idLista})">Eliminar</button>
+                            <form id="form-editar-lista-${lista.idLista}" class="edit-form" onsubmit="event.preventDefault(); editarLista(${lista.idLista});">
+                                <input type="text" name="nombreLista" value="${lista.nombreLista}" required>
+                                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                <button type="button" class="btn btn-secondary" onclick="ocultarFormularioEdicionLista(${lista.idLista})">Cancelar</button>
+                            </form>
                             <ul id="lista-${lista.idLista}" class="deseos" style="display: none;"></ul>`;
                         
                         deseosContainer.appendChild(div);
@@ -179,6 +187,54 @@
                 console.error(error.message);
             });
     }
+
+function mostrarFormularioEdicionLista(idLista, nombre) {
+    const form = document.getElementById(`form-editar-lista-${idLista}`);
+    if (form) {
+        form.style.display = 'block';
+    } else {
+        console.error(`Formulario de edición no encontrado para la lista con ID: ${idLista}`);
+    }
+}
+
+function ocultarFormularioEdicionLista(idLista) {
+    const form = document.getElementById(`form-editar-lista-${idLista}`);
+    if (form) {
+        form.style.display = 'none';
+    } else {
+        console.error(`Formulario de edición no encontrado para la lista con ID: ${idLista}`);
+    }
+}
+
+function editarLista(idLista) {
+    const form = document.getElementById(`form-editar-lista-${idLista}`);
+    if (!form) {
+        console.error(`Formulario de edición no encontrado para la lista con ID: ${idLista}`);
+        return;
+    }
+
+    const formData = new FormData(form);
+
+    fetch(`/listasdeseos/editar/${idLista}`, {
+        method: 'PUT',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al editar la lista');
+        }
+        return response.text(); // Esperamos un texto como respuesta
+    })
+    .then(message => {
+        alert(message); // Mostrar el mensaje de confirmación
+        form.reset(); // Limpiar el formulario
+        location.reload(); // Recargar la página para reflejar los cambios
+    })
+    .catch(error => {
+        console.error(error.message);
+    });
+}
+
 
     function mostrarFormularioEdicion(idDeseo, titulo, url, descripcion) {
         const form = document.getElementById(`form-editar-${idDeseo}`);

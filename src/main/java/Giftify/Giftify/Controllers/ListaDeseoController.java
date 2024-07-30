@@ -69,4 +69,33 @@ public class ListaDeseoController {
 
         return new ResponseEntity<>(listasDeseos, HttpStatus.OK);
     }
+    
+  @PutMapping("/editar/{id}")
+public ResponseEntity<?> editarLista(@PathVariable Long id,
+                                     @RequestParam("nombreLista") String nombreLista) {
+
+    Optional<ListaDeseo> optionalListaDeseo = listaDeseoRepository.findById(id);
+    if (!optionalListaDeseo.isPresent()) {
+        return new ResponseEntity<>("Lista de deseos no encontrada con ID: " + id, HttpStatus.NOT_FOUND);
+    }
+
+    ListaDeseo listaDeseo = optionalListaDeseo.get();
+    listaDeseo.setNombreLista(nombreLista);
+
+    listaDeseoRepository.save(listaDeseo);
+    return new ResponseEntity<>("Lista editada con éxito", HttpStatus.OK);
+}
+
+
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarLista(@PathVariable Long id) {
+        Optional<ListaDeseo> optionalListaDeseo = listaDeseoRepository.findById(id);
+        if (!optionalListaDeseo.isPresent()) {
+            return new ResponseEntity<>("Lista de deseos no encontrada con ID: " + id, HttpStatus.NOT_FOUND);
+        }
+
+        listaDeseoRepository.deleteById(id);
+        return new ResponseEntity<>("Lista de deseos eliminada con éxito", HttpStatus.OK);
+    }
+
 }
