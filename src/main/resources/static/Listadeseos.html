@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de deseos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="giftifyestilo.css">
+    <style>
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+                <path d="M12 8v13"></path>
+                <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+                <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+            </svg>
+            <span>LOGO</span>
+        </div>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <nav>
+                <button class="button" onclick="location.href='inicio.html'">Inicio</button>
+                <button class="button" onclick="location.href='perfil.html'">Perfil</button>
+                <button class="button" onclick="location.href='publicar.html'">Publicar</button>
+                <button class="button" onclick="location.href='buscar.html'">Buscar</button>
+                <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
+                <button class="button" onclick="location.href='Listadeseos.html'">Mis Listas</button>
+                <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+                <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
+                <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
+                <button class="button" id="logoutButton">Cerrar Sesión</button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <h1>Mis listas de deseos</h1>
+            <div id="listasDeseosContainer" class="listas-container">
+                <div id="deseosDeLaLista" class="deseosDeLaLista"></div>
+            </div>
+
+            <h2>Crear nueva lista de deseos</h2>
+            <button class="btn btn-primary" onclick="location.href='crearlistadeseo.html'">Crear nueva lista</button>
+
+           
+        </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (!usuarioStr) {
+            alert('No se encontró el objeto de usuario en sessionStorage');
+            return;
+        }
+        const usuario = JSON.parse(usuarioStr);
+        const idPerfil = usuario.id;
+        if (!idPerfil) {
+            alert('No se encontró el ID del perfil en sessionStorage');
+            return;
+        }
+
+        // Cargar listas de deseos del perfil
+        fetch(`/listasdeseos/perfil/${idPerfil}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al cargar listas de deseos');
+                }
+                return response.json();
+            })
+            .then(listas => {
+                console.log('Listas de deseos recibidas:', listas);
+                const deseosContainer = document.getElementById('deseosDeLaLista');
+                if (deseosContainer) {
+                    deseosContainer.innerHTML = ''; // Limpiar contenedor antes de agregar nuevos elementos
+
+                    listas.forEach(lista => {
+                        const div = document.createElement('div');
+                        div.classList.add('lista-deseos');
+                        div.innerHTML = `
+                            <h3 class="nombre-lista" data-id="${lista.idLista}" style="cursor: pointer;">${lista.nombreLista}</h3>
+                            <ul id="lista-${lista.idLista}" class="deseos" style="display: none;"></ul>`;
+                        
+                        deseosContainer.appendChild(div);
+
+                        // Añadir evento de click para mostrar/ocultar deseos
+                        div.querySelector('.nombre-lista').addEventListener('click', (event) => {
+                            const ul = document.getElementById(`lista-${lista.idLista}`);
+                            if (ul.style.display === 'none') {
+                                ul.style.display = 'block';
+                                cargarDeseos(lista.idLista);
+                            } else {
+                                ul.style.display = 'none';
+                            }
+                        });
+                    });
+                } else {
+                    console.error('No se encontró el contenedor #deseosDeLaLista');
+                }
+            })
+            .catch(error => {
+                console.error(error.message);
+            });
+    });
+
+    function cargarDeseos(idLista) {
+        console.log(`Cargando deseos para la lista con ID: ${idLista}`);
+        fetch(`/deseos/lista/${idLista}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al cargar deseos');
+                }
+                return response.json();
+            })
+            .then(deseos => {
+                console.log(`Deseos recibidos para la lista ${idLista}:`, deseos);
+                const ul = document.getElementById(`lista-${idLista}`);
+                if (!ul) {
+                    console.error(`No se encontró la lista con ID: lista-${idLista}`);
+                    return;
+                }
+                ul.innerHTML = ''; // Limpiar la lista antes de agregar nuevos deseos
+
+                deseos.forEach(deseo => {
+                    const li = document.createElement('li');
+                    li.setAttribute('data-id', deseo.idDeseo);
+
+                    let contenido = '';
+
+                    if (deseo.imagen) {
+                        contenido += `<img src="${deseo.imagen}" alt="" style="max-width: 100px; max-height: 100px;">`;
+                    }
+                    if (deseo.tituloDeseo) {
+                        contenido += `<label>${deseo.tituloDeseo}</label>`;
+                    }
+                    if (deseo.descripcion) {
+                        contenido += `<p>${deseo.descripcion}</p>`;
+                    }
+                    if (deseo.url) {
+                        contenido += `<a href="${deseo.url}" target="_blank">Ver en tienda</a>`;
+                    }
+
+                    if (contenido === '') {
+                        return;
+                    }
+
+                    contenido += `<button class="editar btn btn-warning" onclick="mostrarFormularioEdicion(${deseo.idDeseo}, '${deseo.tituloDeseo}', '${deseo.url}', '${deseo.descripcion}')">Editar</button>
+                                  <button class="eliminar btn btn-danger" onclick="eliminarDeseo(${deseo.idDeseo})">Eliminar</button>
+                                  <form id="form-editar-${deseo.idDeseo}" class="edit-form" onsubmit="event.preventDefault(); editarDeseo(${deseo.idDeseo});">
+                                      <input type="text" name="tituloDeseo" value="${deseo.tituloDeseo}" required>
+                                      <input type="url" name="url" value="${deseo.url}">
+                                      <textarea name="descripcion">${deseo.descripcion}</textarea>
+                                      <input type="file" name="imagen">
+                                      <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                      <button type="button" class="btn btn-secondary" onclick="ocultarFormularioEdicion(${deseo.idDeseo})">Cancelar</button>
+                                  </form>`;
+                    li.innerHTML = contenido;
+                    ul.appendChild(li);
+                });
+
+                // Añadir botón para agregar nuevo deseo al final del listado
+                const addButton = document.createElement('button');
+                addButton.classList.add('btn', 'btn-primary', 'mt-2');
+                addButton.innerText = 'Agregar nuevo deseo';
+                addButton.onclick = () => location.href = 'crearlistadeseo.html';
+                ul.appendChild(addButton);
+            })
+            .catch(error => {
+                console.error(error.message);
+            });
+    }
+
+    function mostrarFormularioEdicion(idDeseo, titulo, url, descripcion) {
+        const form = document.getElementById(`form-editar-${idDeseo}`);
+        form.style.display = 'block';
+    }
+
+    function ocultarFormularioEdicion(idDeseo) {
+        const form = document.getElementById(`form-editar-${idDeseo}`);
+        form.style.display = 'none';
+    }
+
+    function editarDeseo(idDeseo) {
+        const form = document.getElementById(`form-editar-${idDeseo}`);
+        const formData = new FormData(form);
+
+        fetch(`/deseos/editar/${idDeseo}`, {
+            method: 'PUT',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al editar el deseo');
+            }
+            return response.json();
+        })
+        .then(result => {
+            alert('Deseo editado con éxito');
+            location.reload(); // Recargar la página para reflejar los cambios
+        })
+        .catch(error => {
+            console.error(error.message);
+        });
+    }
+
+    function eliminarDeseo(idDeseo) {
+        fetch(`/deseos/eliminar/${idDeseo}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al eliminar el deseo');
+            }
+            return response.text();
+        })
+        .then(result => {
+            alert(result);
+            location.reload(); // Recargar la página para reflejar los cambios
+        })
+        .catch(error => {
+            console.error(error.message);
+        });
+    }
+    </script>
+</body>
+</html>

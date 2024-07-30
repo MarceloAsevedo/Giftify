@@ -57,7 +57,8 @@ public class PublicacionController {
                 publicacion.setFotoPublicacion(fotoPublicacionUrl);
             } catch (IOException e) {
                 e.printStackTrace();
-                return new ResponseEntity<>("Error al guardar la foto de la publicación", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>("Error al guardar la foto de la publicación",
+                        HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
@@ -88,7 +89,7 @@ public class PublicacionController {
         Files.createDirectories(filepath.getParent());
         Files.write(filepath, fotoPublicacion.getBytes());
 
-        // Construir la URL completa
+        // Construir la URL completa para guardar la imagen
         String baseUrl = "http://localhost:8082";
         return baseUrl + "/" + directory + filename;
     }

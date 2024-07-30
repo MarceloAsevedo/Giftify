@@ -1,0 +1,72 @@
+package Giftify.Giftify.Controllers;
+
+import Giftify.Giftify.Models.ListaDeseo;
+import Giftify.Giftify.Models.Perfil;
+import Giftify.Giftify.Repositories.ListaDeseoRepository;
+import Giftify.Giftify.Repositories.PerfilRepository;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/listasdeseos")
+public class ListaDeseoController {
+
+    @Autowired
+    private ListaDeseoRepository listaDeseoRepository;
+
+    @Autowired
+    private PerfilRepository perfilRepository;
+
+    @PostMapping("/nueva")
+    public ResponseEntity<?> crearListaDeseo(
+            @RequestParam("nombreLista") String nombreLista,
+            @RequestParam("idPerfil") Long idPerfil) {
+
+        // Validación de existencia del perfil
+        Optional<Perfil> optionalPerfil = perfilRepository.findById(idPerfil);
+        if (!optionalPerfil.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Perfil perfil = optionalPerfil.get();
+
+        // Verificación de nombre de lista no vacío
+        if (nombreLista == null || nombreLista.trim().isEmpty()) {
+            return new ResponseEntity<>("El nombre de la lista no puede estar vacío", HttpStatus.BAD_REQUEST);
+        }
+
+        ListaDeseo listaDeseo = new ListaDeseo();
+        listaDeseo.setNombreLista(nombreLista);
+        listaDeseo.setPerfil(perfil);
+
+        listaDeseo = listaDeseoRepository.save(listaDeseo);
+
+        // Respuesta con éxito y detalles de la lista creada
+        return new ResponseEntity<>(listaDeseo, HttpStatus.CREATED);
+    }
+
+    // Manejo de excepciones de validación y otros errores
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/perfil/{idPerfil}")
+    public ResponseEntity<?> obtenerListasPorPerfil(@PathVariable Long idPerfil) {
+        Optional<Perfil> optionalPerfil = perfilRepository.findById(idPerfil);
+        if (!optionalPerfil.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado con ID: " + idPerfil, HttpStatus.NOT_FOUND);
+        }
+
+        Perfil perfil = optionalPerfil.get();
+        List<ListaDeseo> listasDeseos = listaDeseoRepository.findByPerfil(perfil);
+
+        return new ResponseEntity<>(listasDeseos, HttpStatus.OK);
+    }
+}
