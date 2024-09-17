@@ -49,7 +49,9 @@ public ResponseEntity<?> register(@ModelAttribute RegistroRequest registroReques
 
     // Verificar si las contraseñas coinciden
     if (!registroRequest.getPassword().equals(registroRequest.getRepetirPassword())) {
-        return new ResponseEntity<>("Las contraseñas no coinciden", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new ApiResponse(false, "El correo ya está registrado"), HttpStatus.BAD_REQUEST);
+
+
     }
 
     // Validar fecha de nacimiento (mayor de 13 años)

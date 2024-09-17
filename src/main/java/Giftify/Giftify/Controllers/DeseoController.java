@@ -27,38 +27,48 @@ public class DeseoController {
     @Autowired
     private ListaDeseoRepository listaDeseoRepository;
 
-    @PostMapping("/nuevo")
-    public ResponseEntity<?> crearDeseo(@RequestParam("tituloDeseo") String tituloDeseo,
-                                        @RequestParam(value = "url", required = false) String url,
-                                        @RequestParam(value = "imagen", required = false) MultipartFile imagen,
-                                        @RequestParam(value = "descripcion", required = false) String descripcion,
-                                        @RequestParam("idLista") Long idLista) {
+   @PostMapping("/nuevo")
+public ResponseEntity<?> crearDeseo(@RequestParam("tituloDeseo") String tituloDeseo,
+                                    @RequestParam(value = "url", required = false) String url,
+                                    @RequestParam(value = "imagen", required = false) MultipartFile imagen,
+                                    @RequestParam(value = "descripcion", required = false) String descripcion,
+                                    @RequestParam("idLista") Long idLista) {
 
-        Optional<ListaDeseo> optionalListaDeseo = listaDeseoRepository.findById(idLista);
-        if (!optionalListaDeseo.isPresent()) {
-            return new ResponseEntity<>("Lista de deseos no encontrada con ID: " + idLista, HttpStatus.NOT_FOUND);
-        }
-
-        ListaDeseo listaDeseo = optionalListaDeseo.get();
-        Deseo deseo = new Deseo();
-        deseo.setTituloDeseo(tituloDeseo);
-        deseo.setUrl(url);
-        deseo.setDescripcion(descripcion);
-        deseo.setListaDeseo(listaDeseo);
-
-        if (imagen != null && !imagen.isEmpty()) {
-            try {
-                String imagenUrl = guardarImagenDeseo(imagen);
-                deseo.setImagen(imagenUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>("Error al guardar la imagen del deseo", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        deseosRepository.save(deseo);
-        return new ResponseEntity<>(deseo, HttpStatus.CREATED);
+    // Verificar si la lista de deseos existe
+    Optional<ListaDeseo> optionalListaDeseo = listaDeseoRepository.findById(idLista);
+    if (!optionalListaDeseo.isPresent()) {
+        return new ResponseEntity<>("Lista de deseos no encontrada con ID: " + idLista, HttpStatus.NOT_FOUND);
     }
+
+    ListaDeseo listaDeseo = optionalListaDeseo.get();
+    Deseo deseo = new Deseo();
+    deseo.setTituloDeseo(tituloDeseo);
+    deseo.setUrl(url);
+    deseo.setDescripcion(descripcion);
+    deseo.setListaDeseo(listaDeseo);
+
+
+    if (imagen != null && !imagen.isEmpty()) {
+        try {
+            String imagenUrl = guardarImagenDeseo(imagen);
+            deseo.setImagen(imagenUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error al guardar la imagen del deseo", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    
+    try {
+        deseosRepository.save(deseo);
+    } catch (Exception e) {
+        e.printStackTrace(); // Log error
+        return new ResponseEntity<>("Error al guardar el deseo", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return new ResponseEntity<>(deseo, HttpStatus.CREATED);
+}
+
 
     @PutMapping("/editar/{id}")
     public ResponseEntity<?> editarDeseo(@PathVariable Long id,

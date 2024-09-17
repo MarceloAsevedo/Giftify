@@ -132,8 +132,9 @@
     })
     .then(data => {
         alert('Lista de deseos creada exitosamente');
-        document.getElementById('formAgregarListaDeseo').reset(); // Limpiar formulario
-        // Puedes agregar más lógica aquí si necesitas, como actualizar una lista en la página.
+        document.getElementById('formAgregarListaDeseo').reset();
+        location.reload();
+       
     })
     .catch(error => {
         console.error('Error:', error);

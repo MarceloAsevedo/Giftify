@@ -55,26 +55,26 @@
     if (fotoPerfil) {
         formData.append('fotoPerfil', fotoPerfil);
     }
-
-    fetch('/registro/register', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error en el registro');
-        }
-        return response.json();
-    })
-    .then(data => {
-        alert('Registro exitoso: ' + data.message);
-        document.getElementById('registroForm').reset(); // Limpiar formulario
-        window.location.href = 'login.html'; // Redirigir al login
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error en el registro: ' + error.message);
-    });
+fetch('/registro/register', {
+    method: 'POST',
+    body: formData
+})
+.then(response => {
+    console.log(response); // <-- Log completo de la respuesta
+    if (!response.ok) {
+        throw new Error('Error en el registro');
+    }
+    return response.json();
+})
+.then(data => {
+    alert('Registro exitoso: ' + data.message);
+    document.getElementById('registroForm').reset(); // Limpiar formulario
+    window.location.href = 'login.html'; // Redirigir al login
+})
+.catch(error => {
+    console.error('Error:', error);
+    alert('Error en el registro: ' + error.message);
+});
 });
 
 
