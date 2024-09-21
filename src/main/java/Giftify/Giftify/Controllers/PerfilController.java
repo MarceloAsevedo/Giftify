@@ -44,6 +44,7 @@ public class PerfilController {
                                           @RequestParam("fechaNacimiento") String fechaNacimiento,
                                           @RequestParam("link") String link,
                                           @RequestParam("descripcion") String descripcion,
+                                          @RequestParam("esprivada") boolean esprivada,
                                           @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil) {
         // Validar edad (mayor de 13 años)
         LocalDate fechaNac;

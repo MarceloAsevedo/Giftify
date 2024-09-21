@@ -36,6 +36,9 @@ public class Perfil {
 
     @Column(name = "link", nullable = true)
     private String link;
+    
+    @Column(name = "esprivada", nullable = false)
+    private boolean esprivada;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
@@ -58,15 +61,16 @@ public class Perfil {
     public Perfil() {
     }
 
-    public Perfil(String nombre, String apellido, LocalDate fechaNacimiento, Usuario usuario, String fotoPerfil) {
+    public Perfil(String nombre, String apellido, LocalDate fechaNacimiento, Usuario usuario, String fotoPerfil, boolean esprivada) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
         this.fotoPerfil = fotoPerfil;
         this.usuario = usuario;
+        this.esprivada = esprivada;
     }
 
-    public Perfil(Long idPerfil, String nombre, String apellido, LocalDate fechaNacimiento, String fotoPerfil, String descripcion, String link, Usuario usuario) {
+    public Perfil(Long idPerfil, String nombre, String apellido, LocalDate fechaNacimiento, String fotoPerfil, String descripcion, String link, Usuario usuario,  boolean esprivada) {
         this.idPerfil = idPerfil;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -75,6 +79,7 @@ public class Perfil {
         this.descripcion = descripcion;
         this.link = link;
         this.usuario = usuario;
+        this.esprivada = esprivada;
     }
 
     // Getters and setters
@@ -156,6 +161,14 @@ public class Perfil {
 
     public void setAmigos(Set<Perfil> amigos) {
         this.amigos = amigos;
+    }
+
+    public boolean isEsprivada() {
+        return esprivada;
+    }
+
+    public void setEsprivada(boolean esprivada) {
+        this.esprivada = esprivada;
     }
     
 }

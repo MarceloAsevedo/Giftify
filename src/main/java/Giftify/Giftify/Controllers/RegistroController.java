@@ -38,6 +38,7 @@ public class RegistroController {
 
     @PostMapping("/register")
 public ResponseEntity<?> register(@ModelAttribute RegistroRequest registroRequest,
+                                  @RequestParam("esprivada") boolean esprivada,
                                   @RequestParam(value = "fotoPerfil", required = false) MultipartFile fotoPerfil) {
 
     System.out.println("Registro request: " + registroRequest); // Log de depuración
@@ -53,7 +54,7 @@ public ResponseEntity<?> register(@ModelAttribute RegistroRequest registroReques
 
 
     }
-
+    
     // Validar fecha de nacimiento (mayor de 13 años)
     LocalDate fechaNacimiento;
     try {
@@ -88,7 +89,7 @@ public ResponseEntity<?> register(@ModelAttribute RegistroRequest registroReques
     System.out.println("Usuario antes de guardar: " + usuario); // Log de depuración
 
     // Crear y guardar el perfil
-    Perfil perfil = new Perfil(registroRequest.getNombre(), registroRequest.getApellido(), fechaNacimiento, usuario, fotoPerfilUrl);
+    Perfil perfil = new Perfil(registroRequest.getNombre(), registroRequest.getApellido(), fechaNacimiento, usuario, fotoPerfilUrl , esprivada);
 
     // Establecer la relación bidireccional
     usuario.setPerfil(perfil);
