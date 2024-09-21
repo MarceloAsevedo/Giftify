@@ -7,36 +7,36 @@
     <link rel="stylesheet" href="giftifyestilo.css">
 </head>
 <body>
-  <header class="header">
+<header class="header">
     <div class="logo">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-        <rect x="3" y="8" width="18" height="4" rx="1"></rect>
-        <path d="M12 8v13"></path>
-        <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
-        <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
-      </svg>
-      <span>LOGO</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+            <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+            <path d="M12 8v13"></path>
+            <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+            <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+        </svg>
+        <span>LOGO</span>
     </div>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-      <line x1="4" x2="20" y1="12" y2="12"></line>
-      <line x1="4" x2="20" y1="6" y2="6"></line>
-      <line x1="4" x2="20" y1="18" y2="18"></line>
+        <line x1="4" x2="20" y1="12" y2="12"></line>
+        <line x1="4" x2="20" y1="6" y2="6"></line>
+        <line x1="4" x2="20" y1="18" y2="18"></line>
     </svg>
-  </header>
-  <div class="container">
+</header>
+<div class="container">
     <aside class="sidebar">
-     <nav>
-         <button class="button" onclick="location.href='inicio.html'">Inicio</button>
-        <button class="button" onclick="location.href='perfil.html'">Perfil</button>
-        <button class="button" onclick="location.href='publicar.html'">Publicar</button>
-        <button class="button" onclick="location.href='perfil.html'">Buscar</button>
-        <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
-        <button class="button" onclick="location.href='Listadeseos.html'">Mis Listas</button>
-        <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
-        <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
-        <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
-        <button class="button" id="logoutButton">Cerrar Sesión</button>
-      </nav>
+        <nav>
+            <button class="button" onclick="location.href='inicio.html'">Inicio</button>
+            <button class="button" onclick="location.href='perfil.html'">Perfil</button>
+            <button class="button" onclick="location.href='publicar.html'">Publicar</button>
+            <button class="button" onclick="location.href='perfil.html'">Buscar</button>
+            <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
+            <button class="button" onclick="location.href='Listadeseos.html'">Mis Listas</button>
+            <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+            <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
+            <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
+            <button class="button" id="logoutButton">Cerrar Sesión</button>
+        </nav>
     </aside>
     <form id="editarForm" enctype="multipart/form-data">
         <label for="nombre">Nombre:</label>
@@ -52,70 +52,83 @@
 
         <label for="fotoPerfil">Foto de Perfil:</label>
         <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*">
-       
+        <label for="esprivada">¿Perfil Privado?</label>
+        <input type="checkbox" id="esprivada" name="esprivada">
+        <span id="estadoPerfil">Público</span>
+
         <button type="submit">Guardar cambios</button>
     </form>
-      <script>
-         document.addEventListener('DOMContentLoaded', function() {
-    const usuarioStr = sessionStorage.getItem('usuario');
-    if (!usuarioStr) {
-        alert('No se encontró el objeto de usuario en sessionStorage');
-        return;
-    }
-
-    const usuario = JSON.parse(usuarioStr);
-    const id = usuario.id;
-
-    if (!id) {
-        alert('No se encontró el ID del perfil en sessionStorage');
-        return;
-    }
-
-
-    // Solo agrega el event listener si el elemento existe
-    const editarForm = document.getElementById('editarForm');
-    if (editarForm) {
-        editarForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const nombre = document.getElementById('nombre').value;
-            const apellido = document.getElementById('apellido').value;
-            const fechaNacimiento = document.getElementById('fechanacimiento').value;
-            const fotoPerfil = document.getElementById('fotoPerfil').files[0];
-            const descripcion = document.getElementById('descripcion').value;
-            const link = document.getElementById('link').value;
-
-            const formData = new FormData();
-            formData.append('nombre', nombre);
-            formData.append('apellido', apellido);
-            formData.append('fechaNacimiento', fechaNacimiento);
-            formData.append('link', link);
-            formData.append('descripcion', descripcion);
-            if (fotoPerfil) {
-                formData.append('fotoPerfil', fotoPerfil);
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioStr = sessionStorage.getItem('usuario');
+            if (!usuarioStr) {
+                alert('No se encontró el objeto de usuario en sessionStorage');
+                return;
             }
 
-            fetch(`/perfil/editarperfil/${id}`, {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                if (response.ok) {
-                    alert('Perfil editado correctamente');
-                    window.location.href = 'perfil.html'; // Redirecciona a perfil.html
-                } else {
-                    response.text().then(text => {
-                        alert(text); // Muestra el mensaje de error
-                    });
-                }
-            }).catch(error => {
-                console.error('Error al editar el perfil:', error);
-                alert('Ocurrió un error al intentar editar el perfil');
+            const usuario = JSON.parse(usuarioStr);
+            const id = usuario.id;
+
+            if (!id) {
+                alert('No se encontró el ID del perfil en sessionStorage');
+                return;
+            }
+
+            // Estado del perfil (Público o Privado)
+            const perfilPrivadoCheckbox = document.getElementById('esprivada');
+            const estadoPerfil = document.getElementById('estadoPerfil');
+
+            // Cambiar el texto del estado cuando se cambia el checkbox
+            perfilPrivadoCheckbox.addEventListener('change', function() {
+                estadoPerfil.textContent = perfilPrivadoCheckbox.checked ? 'Privado' : 'Público';
             });
+
+            // Solo agrega el event listener si el elemento existe
+            const editarForm = document.getElementById('editarForm');
+            if (editarForm) {
+                editarForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const nombre = document.getElementById('nombre').value;
+                    const apellido = document.getElementById('apellido').value;
+                    const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+                    const fotoPerfil = document.getElementById('fotoPerfil').files[0];
+                    const descripcion = document.getElementById('descripcion').value;
+                    const link = document.getElementById('link').value;
+                    const esPrivada = perfilPrivadoCheckbox.checked; // Nuevo campo de perfil privado
+
+                    const formData = new FormData();
+                    formData.append('nombre', nombre);
+                    formData.append('apellido', apellido);
+                    formData.append('fechaNacimiento', fechaNacimiento);
+                    formData.append('link', link);
+                    formData.append('descripcion', descripcion);
+                    formData.append('esprivada', esPrivada); // Agregar estado del perfil
+                    if (fotoPerfil) {
+                        formData.append('fotoPerfil', fotoPerfil);
+                    }
+
+                    fetch(`/perfil/editarperfil/${id}`, {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => {
+                        if (response.ok) {
+                            alert('Perfil editado correctamente');
+                            window.location.href = 'perfil.html'; // Redirecciona a perfil.html
+                        } else {
+                            response.text().then(text => {
+                                alert(text); // Muestra el mensaje de error
+                            });
+                        }
+                    }).catch(error => {
+                        console.error('Error al editar el perfil:', error);
+                        alert('Ocurrió un error al intentar editar el perfil');
+                    });
+                });
+            } else {
+                console.warn('El formulario de edición no se encontró en el DOM');
+            }
         });
-    } else {
-        console.warn('El formulario de edición no se encontró en el DOM');
-    }
-});
-      </script>
-      <script src="cerrarSesion.js"></script>
+    </script>
+    <script src="cerrarSesion.js"></script>
 </body>
 </html>
