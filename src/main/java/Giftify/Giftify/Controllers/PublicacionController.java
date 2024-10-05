@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,66 +32,100 @@ public class PublicacionController {
     @Autowired
     private PerfilRepository perfilRepository;
 
-    @PostMapping("/nueva")
-    public ResponseEntity<?> crearPublicacion(@RequestParam("descripcionPublicacion") String descripcionPublicacion,
-                                              @RequestParam(value = "fotoPublicacion", required = false) MultipartFile fotoPublicacion,
-                                              @RequestParam("idPerfil") Long idPerfil) {
-
-        // Validar perfil existente
-        Optional<Perfil> optionalPerfil = perfilRepository.findById(idPerfil);
-        if (!optionalPerfil.isPresent()) {
-            return new ResponseEntity<>("Perfil no encontrado con ID: " + idPerfil, HttpStatus.NOT_FOUND);
-        }
-
-        Perfil perfil = optionalPerfil.get();
-
-        // Crear nueva publicación
-        Publicacion publicacion = new Publicacion();
-        publicacion.setDescripcionPublicacion(descripcionPublicacion);
-        publicacion.setFechaHoraPublicado(LocalDateTime.now());
-        publicacion.setPerfil(perfil);
-
-        // Manejar la foto de la publicación
-        if (fotoPublicacion != null && !fotoPublicacion.isEmpty()) {
-            try {
-                String fotoPublicacionUrl = guardarFotoPublicacion(fotoPublicacion);
-                publicacion.setFotoPublicacion(fotoPublicacionUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>("Error al guardar la foto de la publicación",
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        // Guardar la publicación
-        publicacionRepository.save(publicacion);
-
-        return new ResponseEntity<>(publicacion, HttpStatus.CREATED);
-    }
-    
+    // Obtener todas las publicaciones, ordenadas de más reciente a más antigua
     @GetMapping("/todas")
     public ResponseEntity<?> obtenerPublicaciones() {
         List<PublicacionDTO> publicaciones = publicacionRepository.findAll().stream()
+                .sorted(Comparator.comparing(Publicacion::getFechaHoraPublicado).reversed())  // Orden descendente
                 .map(publicacion -> new PublicacionDTO(
                         publicacion.getDescripcionPublicacion(),
                         publicacion.getFechaHoraPublicado(),
                         publicacion.getFotoPublicacion(),
                         publicacion.getPerfil().getNombre(),
                         publicacion.getPerfil().getApellido(),
-                        publicacion.getPerfil().getFotoPerfil()// esto deberiiiia traer el nombre del perfil, vamo a ve, si anda hacer lo mismo con el apellido tambien asi tre los 2 juntos, y la foto igual
+                        publicacion.getPerfil().getFotoPerfil()
                 ))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(publicaciones, HttpStatus.OK);
     }
-    private String guardarFotoPublicacion(MultipartFile fotoPublicacion) throws IOException {
-        String directory = "static/publicaciones/";
-        String filename = fotoPublicacion.getOriginalFilename();
-        Path filepath = Paths.get(directory, filename);
-        Files.createDirectories(filepath.getParent());
-        Files.write(filepath, fotoPublicacion.getBytes());
 
-        // Construir la URL completa para guardar la imagen
-        String baseUrl = "http://localhost:8082";
-        return baseUrl + "/" + directory + filename;
+    // Obtener publicaciones según la privacidad del perfil y relación de amistad
+    @GetMapping("/{perfilId}/usuario/{usuarioId}/publicaciones")
+    public ResponseEntity<?> obtenerPublicacionesConPrivacidad(@PathVariable Long perfilId, @PathVariable Long usuarioId) {
+        Optional<Perfil> optionalPerfil = perfilRepository.findById(perfilId);
+        Optional<Perfil> optionalUsuario = perfilRepository.findById(usuarioId);
+
+        if (!optionalPerfil.isPresent() || !optionalUsuario.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Perfil perfil = optionalPerfil.get();
+        Perfil usuario = optionalUsuario.get();
+        boolean esAmigo = perfil.getAmigos().stream().anyMatch(amigo -> amigo.getIdPerfil().equals(usuario.getIdPerfil()));
+
+        if (!perfil.isEsprivada() || esAmigo) {  // Mostrar si el perfil es público o si es amigo
+            List<PublicacionDTO> publicaciones = publicacionRepository.findAll().stream()
+                    .filter(publicacion -> publicacion.getPerfil().getIdPerfil().equals(perfilId))
+                    .sorted(Comparator.comparing(Publicacion::getFechaHoraPublicado).reversed())  // Orden descendente
+                    .map(publicacion -> new PublicacionDTO(
+                            publicacion.getDescripcionPublicacion(),
+                            publicacion.getFechaHoraPublicado(),
+                            publicacion.getFotoPublicacion(),
+                            publicacion.getPerfil().getNombre(),
+                            publicacion.getPerfil().getApellido(),
+                            publicacion.getPerfil().getFotoPerfil()
+                    ))
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(publicaciones, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("El perfil es privado y no son amigos", HttpStatus.FORBIDDEN);
+    }
+
+    // Obtener solo las publicaciones del perfil (página de perfil propio)
+    @GetMapping("/{perfilId}/publicaciones")
+    public ResponseEntity<?> obtenerPublicacionesPorPerfil(@PathVariable Long perfilId) {
+        List<PublicacionDTO> publicaciones = publicacionRepository.findAll().stream()
+                .filter(publicacion -> publicacion.getPerfil().getIdPerfil().equals(perfilId))
+                .sorted(Comparator.comparing(Publicacion::getFechaHoraPublicado).reversed())  // Orden descendente
+                .map(publicacion -> new PublicacionDTO(
+                        publicacion.getDescripcionPublicacion(),
+                        publicacion.getFechaHoraPublicado(),
+                        publicacion.getFotoPublicacion(),
+                        publicacion.getPerfil().getNombre(),
+                        publicacion.getPerfil().getApellido(),
+                        publicacion.getPerfil().getFotoPerfil()
+                ))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(publicaciones, HttpStatus.OK);
+    }
+
+    // Obtener publicaciones para la página de inicio (de amigos o perfiles públicos)
+    @GetMapping("/inicio/{usuarioId}")
+    public ResponseEntity<?> obtenerPublicacionesParaInicio(@PathVariable Long usuarioId) {
+        Optional<Perfil> optionalUsuario = perfilRepository.findById(usuarioId);
+        if (!optionalUsuario.isPresent()) {
+            return new ResponseEntity<>("Usuario no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Perfil usuario = optionalUsuario.get();
+        List<PublicacionDTO> publicaciones = publicacionRepository.findAll().stream()
+                .filter(publicacion -> {
+                    Perfil autor = publicacion.getPerfil();
+                    boolean esAmigo = usuario.getAmigos().contains(autor);
+                    return esAmigo || !autor.isEsprivada();  // Mostrar si es amigo o si el perfil es público
+                })
+                .sorted(Comparator.comparing(Publicacion::getFechaHoraPublicado).reversed())  // Orden descendente
+                .map(publicacion -> new PublicacionDTO(
+                        publicacion.getDescripcionPublicacion(),
+                        publicacion.getFechaHoraPublicado(),
+                        publicacion.getFotoPublicacion(),
+                        publicacion.getPerfil().getNombre(),
+                        publicacion.getPerfil().getApellido(),
+                        publicacion.getPerfil().getFotoPerfil()
+                ))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(publicaciones, HttpStatus.OK);
     }
 }

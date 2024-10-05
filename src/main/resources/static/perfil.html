@@ -119,6 +119,69 @@
 
   </script>
   <script src="cerrarSesion.js"></script>
-  <script src="publicacionesjs.js"></script>
+  <script>
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const usuarioStr = sessionStorage.getItem('usuario');
+    if (!usuarioStr) {
+      alert('No se encontró el objeto de usuario en sessionStorage');
+      return;
+    }
+
+    const usuario = JSON.parse(usuarioStr);
+    const perfilId = usuario.id;
+
+    if (!perfilId) {
+      alert('No se encontró el ID del perfil en sessionStorage');
+      return;
+    }
+
+    // Cambiar el endpoint a la ruta que obtiene publicaciones del perfil actual
+    fetch(`http://localhost:8082/publicaciones/${perfilId}/publicaciones`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al obtener las publicaciones del perfil actual');
+        }
+        return response.json();
+      })
+      .then(data => {
+        const publicacionesDiv = document.getElementById('publicaciones');
+        if (data.length === 0) {
+          publicacionesDiv.innerHTML = '<p>No hay publicaciones disponibles.</p>';
+          return;
+        }
+
+        data.forEach(publicacion => {
+          const pubDiv = document.createElement('div');
+          pubDiv.className = 'publicacion';
+          pubDiv.innerHTML = `
+            <div class="perfil-info">
+              ${publicacion.fotoPerfil ? `<img src="${publicacion.fotoPerfil}" alt="Foto de perfil">` : ''}
+              <p>${publicacion.nombrePerfil} ${publicacion.apellidoPerfil}</p>
+            </div>
+            <div class="publicacion-descripcion">
+              <p>${publicacion.descripcionPublicacion}</p>
+            </div>
+            ${publicacion.fotoPublicacion ? `
+              <div class="publicacion-foto">
+                <img src="${publicacion.fotoPublicacion}" alt="Foto de la publicación">
+              </div>` : ''}
+            <div class="publicacion-fecha">
+              <p>${new Date(publicacion.fechaHoraPublicado).toLocaleString()}</p>
+            </div>
+          `;
+          publicacionesDiv.appendChild(pubDiv);
+        });
+      })
+      .catch(error => {
+        console.error('Error al obtener publicaciones del perfil actual:', error);
+        const publicacionesDiv = document.getElementById('publicaciones');
+        publicacionesDiv.innerHTML = '<p>Error al cargar publicaciones. Inténtalo más tarde.</p>';
+      });
+  });
+  </script>
+
+
+
 </body>
 </html>
