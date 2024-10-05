@@ -32,6 +32,48 @@ public class PublicacionController {
     @Autowired
     private PerfilRepository perfilRepository;
 
+    @PostMapping("/nueva")
+    public ResponseEntity<?> crearPublicacion(
+            @RequestParam("descripcionPublicacion") String descripcionPublicacion,
+            @RequestParam(value = "fotoPublicacion", required = false) MultipartFile fotoPublicacion,
+            @RequestParam("idPerfil") Long idPerfil,
+            @RequestParam(value = "privado", defaultValue = "true") boolean privado // Agregar campo de privacidad
+    ) {
+        // Validar perfil existente
+        Optional<Perfil> optionalPerfil = perfilRepository.findById(idPerfil);
+        if (!optionalPerfil.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado con ID: " + idPerfil, HttpStatus.NOT_FOUND);
+        }
+
+        Perfil perfil = optionalPerfil.get();
+
+        // Crear nueva publicación
+        Publicacion publicacion = new Publicacion();
+        publicacion.setDescripcionPublicacion(descripcionPublicacion);
+        publicacion.setFechaHoraPublicado(LocalDateTime.now());
+        publicacion.setPerfil(perfil);
+
+        // Establecer si la publicación es privada o pública
+        publicacion.setPrivado(privado); // Añadir el valor de esPrivada al campo privado
+
+        // Manejar la foto de la publicación
+        if (fotoPublicacion != null && !fotoPublicacion.isEmpty()) {
+            try {
+                String fotoPublicacionUrl = guardarFotoPublicacion(fotoPublicacion);
+                publicacion.setFotoPublicacion(fotoPublicacionUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>("Error al guardar la foto de la publicación",
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        // Guardar la publicación
+        publicacionRepository.save(publicacion);
+
+        return new ResponseEntity<>(publicacion, HttpStatus.CREATED);
+    }
+
     // Obtener todas las publicaciones, ordenadas de más reciente a más antigua
     @GetMapping("/todas")
     public ResponseEntity<?> obtenerPublicaciones() {
@@ -49,7 +91,6 @@ public class PublicacionController {
         return new ResponseEntity<>(publicaciones, HttpStatus.OK);
     }
 
-    // Obtener publicaciones según la privacidad del perfil y relación de amistad
     @GetMapping("/{perfilId}/usuario/{usuarioId}/publicaciones")
     public ResponseEntity<?> obtenerPublicacionesConPrivacidad(@PathVariable Long perfilId, @PathVariable Long usuarioId) {
         Optional<Perfil> optionalPerfil = perfilRepository.findById(perfilId);
@@ -65,7 +106,8 @@ public class PublicacionController {
 
         if (!perfil.isEsprivada() || esAmigo) {  // Mostrar si el perfil es público o si es amigo
             List<PublicacionDTO> publicaciones = publicacionRepository.findAll().stream()
-                    .filter(publicacion -> publicacion.getPerfil().getIdPerfil().equals(perfilId))
+                    .filter(publicacion -> publicacion.getPerfil().getIdPerfil().equals(perfilId)
+                            && (!publicacion.isPrivado() || esAmigo)) // Filtro de publicaciones privadas
                     .sorted(Comparator.comparing(Publicacion::getFechaHoraPublicado).reversed())  // Orden descendente
                     .map(publicacion -> new PublicacionDTO(
                             publicacion.getDescripcionPublicacion(),
@@ -81,6 +123,7 @@ public class PublicacionController {
 
         return new ResponseEntity<>("El perfil es privado y no son amigos", HttpStatus.FORBIDDEN);
     }
+
 
     // Obtener solo las publicaciones del perfil (página de perfil propio)
     @GetMapping("/{perfilId}/publicaciones")
@@ -113,7 +156,7 @@ public class PublicacionController {
                 .filter(publicacion -> {
                     Perfil autor = publicacion.getPerfil();
                     boolean esAmigo = usuario.getAmigos().contains(autor);
-                    return esAmigo || !autor.isEsprivada();  // Mostrar si es amigo o si el perfil es público
+                    return (esAmigo || !autor.isEsprivada()) && (!publicacion.isPrivado() || esAmigo); // Filtro de privacidad
                 })
                 .sorted(Comparator.comparing(Publicacion::getFechaHoraPublicado).reversed())  // Orden descendente
                 .map(publicacion -> new PublicacionDTO(
@@ -128,4 +171,16 @@ public class PublicacionController {
 
         return new ResponseEntity<>(publicaciones, HttpStatus.OK);
     }
+    private String guardarFotoPublicacion(MultipartFile fotoPublicacion) throws IOException {
+        String directory = "static/publicaciones/";
+        String filename = fotoPublicacion.getOriginalFilename();
+        Path filepath = Paths.get(directory, filename);
+        Files.createDirectories(filepath.getParent());
+        Files.write(filepath, fotoPublicacion.getBytes());
+
+        // Construir la URL completa para guardar la imagen
+        String baseUrl = "http://localhost:8082";
+        return baseUrl + "/" + directory + filename;
+    }
 }
+

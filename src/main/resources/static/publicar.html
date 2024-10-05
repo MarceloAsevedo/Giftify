@@ -7,30 +7,30 @@
     <link rel="stylesheet" href="giftifyestilo.css">
 </head>
 <body>
-  <header class="header">
+<header class="header">
     <div class="logo">
-      <!-- SVG del logo -->
+        <!-- SVG del logo -->
     </div>
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-      <line x1="4" x2="20" y1="12" y2="12"></line>
-      <line x1="4" x2="20" y1="6" y2="6"></line>
-      <line x1="4" x2="20" y1="18" y2="18"></line>
+        <line x1="4" x2="20" y1="12" y2="12"></line>
+        <line x1="4" x2="20" y1="6" y2="6"></line>
+        <line x1="4" x2="20" y1="18" y2="18"></line>
     </svg>
-  </header>
-  <div class="container">
+</header>
+<div class="container">
     <aside class="sidebar">
-     <nav>
-         <button class="button" onclick="location.href='inicio.html'">Inicio</button>
-        <button class="button" onclick="location.href='perfil.html'">Perfil</button>
-        <button class="button" onclick="location.href='publicar.html'">Publicar</button>
-        <button class="button" onclick="location.href='perfil.html'">Buscar</button>
-        <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
-        <button class="button" onclick="location.href='Listadeseos.html'">Mis Listas</button>
-        <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
-        <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
-        <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
-        <button class="button" id="logoutButton">Cerrar Sesión</button>
-      </nav>
+        <nav>
+            <button class="button" onclick="location.href='inicio.html'">Inicio</button>
+            <button class="button" onclick="location.href='perfil.html'">Perfil</button>
+            <button class="button" onclick="location.href='publicar.html'">Publicar</button>
+            <button class="button" onclick="location.href='perfil.html'">Buscar</button>
+            <button class="button" onclick="location.href='perfil.html'">Mensajes</button>
+            <button class="button" onclick="location.href='Listadeseos.html'">Mis Listas</button>
+            <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+            <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
+            <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
+            <button class="button" id="logoutButton">Cerrar Sesión</button>
+        </nav>
     </aside>
     <div class="contenedor">
         <div class="form-section">
@@ -42,6 +42,9 @@
 
                 <label for="fotoPublicacion">Foto de la Publicación:</label>
                 <input type="file" id="fotoPublicacion" name="fotoPublicacion" accept="image/*">
+
+                <label for="esPublica">¿Quieres que sea pública?</label>
+                <input type="checkbox" id="esPublica" name="esPublica">
 
                 <input type="hidden" id="idPerfil" name="idPerfil">
 
@@ -69,7 +72,13 @@
             event.preventDefault();
             const form = event.target;
             const formData = new FormData(form);
-          
+
+            // Si el checkbox no está marcado, la publicación será privada por defecto
+            if (!document.getElementById('esPublica').checked) {
+                formData.append('esPrivada', 'true'); // Envío al backend que la publicación es privada
+            } else {
+                formData.append('esPrivada', 'false'); // Si está marcada, es pública
+            }
 
             fetch('/publicaciones/nueva', {
                 method: 'POST',

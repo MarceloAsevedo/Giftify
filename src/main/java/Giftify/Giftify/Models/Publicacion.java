@@ -23,6 +23,9 @@ public class Publicacion {
     @Column(name = "foto_publicacion", nullable = true)
     private String fotoPublicacion;
 
+    @Column(name = "privado", nullable = false)
+    private boolean privado;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_perfil", referencedColumnName = "id_perfil")
     @JsonBackReference
@@ -78,4 +81,13 @@ public class Publicacion {
     public void setPerfil(Perfil perfil) {
         this.perfil = perfil;
     }
+
+    public boolean isPrivado() {
+        return privado;
+    }
+
+    public void setPrivado(boolean privado) {
+        this.privado = privado;
+    }
+
 }
