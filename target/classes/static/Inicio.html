@@ -54,6 +54,7 @@
    const usuario = JSON.parse(usuarioStr);
    const userId = usuario.id;
 
+   // Realizar fetch para obtener las publicaciones del inicio (incluyendo las del usuario logueado)
    fetch(`http://localhost:8082/publicaciones/inicio/${userId}`)
      .then(response => {
        if (!response.ok) {

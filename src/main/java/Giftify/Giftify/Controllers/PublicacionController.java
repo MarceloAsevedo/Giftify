@@ -152,11 +152,15 @@ public class PublicacionController {
         }
 
         Perfil usuario = optionalUsuario.get();
+
+        // Obtener todas las publicaciones, incluyendo las del propio usuario logueado
         List<PublicacionDTO> publicaciones = publicacionRepository.findAll().stream()
                 .filter(publicacion -> {
                     Perfil autor = publicacion.getPerfil();
                     boolean esAmigo = usuario.getAmigos().contains(autor);
-                    return (esAmigo || !autor.isEsprivada()) && (!publicacion.isPrivado() || esAmigo); // Filtro de privacidad
+                    // Mostrar si es amigo, perfil público, o si la publicación es del usuario logueado
+                    return (esAmigo || !autor.isEsprivada() || autor.getIdPerfil().equals(usuario.getIdPerfil())) &&
+                            (!publicacion.isPrivado() || esAmigo || autor.getIdPerfil().equals(usuario.getIdPerfil()));  // Filtrar publicaciones privadas
                 })
                 .sorted(Comparator.comparing(Publicacion::getFechaHoraPublicado).reversed())  // Orden descendente
                 .map(publicacion -> new PublicacionDTO(
@@ -171,6 +175,7 @@ public class PublicacionController {
 
         return new ResponseEntity<>(publicaciones, HttpStatus.OK);
     }
+
     private String guardarFotoPublicacion(MultipartFile fotoPublicacion) throws IOException {
         String directory = "static/publicaciones/";
         String filename = fotoPublicacion.getOriginalFilename();
