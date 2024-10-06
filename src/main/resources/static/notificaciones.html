@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - Giftify</title>
+    <link rel="stylesheet" href="giftifyestilo.css">
+</head>
+<body>
+<header class="header">
+    <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+            <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+            <path d="M12 8v13"></path>
+            <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+            <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+        </svg>
+        <span>LOGO</span>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+        <line x1="4" x2="20" y1="12" y2="12"></line>
+        <line x1="4" x2="20" y1="6" y2="6"></line>
+        <line x1="4" x2="20" y1="18" y2="18"></line>
+    </svg>
+</header>
+<div class="container">
+    <aside class="sidebar">
+        <nav>
+            <button class="button" onclick="location.href='inicio.html'">Inicio</button>
+            <button class="button" onclick="location.href='perfil.html'">Perfil</button>
+            <button class="button" onclick="location.href='publicar.html'">Publicar</button>
+            <button class="button" onclick="location.href='buscar.html'">Buscar</button>
+            <button class="button" onclick="location.href='mensajes.html'">Mensajes</button>
+            <button class="button" onclick="location.href='Listadeseos.html'">Mis Listas</button>
+            <button class="button" onclick="location.href='notificaciones.html'">Notificaciones</button>
+            <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
+            <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
+            <button class="button" id="logoutButton">Cerrar Sesión</button>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <h1>Notificaciones</h1>
+        <section class="solicitudes-amistad">
+            <h2>Solicitudes de Amistad</h2>
+            <div id="solicitudesList"></div>
+        </section>
+    </main>
+</div>
+
+<!-- Scripts -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const usuarioStr = sessionStorage.getItem('usuario');
+
+        if (!usuarioStr) {
+            alert('No se encontró el objeto de usuario en sessionStorage');
+            return;
+        }
+
+        const usuario = JSON.parse(usuarioStr);
+        const usuarioId = usuario.id;
+
+        // Fetch solicitudes de amistad
+        fetch(`http://localhost:8082/perfil/${usuarioId}/solicitudes`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener las solicitudes de amistad');
+                }
+                return response.json();
+            })
+            .then(solicitudes => {
+                const solicitudesList = document.getElementById('solicitudesList');
+                solicitudes.forEach(solicitud => {
+                    const solicitudItem = document.createElement('div');
+                    solicitudItem.classList.add('solicitud-item');
+                    solicitudItem.id = `solicitud-${solicitud.id}`;
+                    solicitudItem.innerHTML = `
+                        <img src="${solicitud.emisor.fotoPerfil || '/static/placeholder.svg'}" alt="Profile Image" class="solicitud-img">
+                        <span>${solicitud.emisor.nombre} ${solicitud.emisor.apellido}</span>
+                        <button class="accept-button" onclick="aceptarSolicitud(${solicitud.id})">Aceptar</button>
+                        <button class="reject-button" onclick="rechazarSolicitud(${solicitud.id})">Rechazar</button>
+                    `;
+                    solicitudesList.appendChild(solicitudItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener las solicitudes:', error);
+            });
+    });
+
+    // Aceptar solicitud de amistad
+function aceptarSolicitud(solicitudId) {
+    const usuarioStr = sessionStorage.getItem('usuario');
+    const usuario = JSON.parse(usuarioStr);
+    const usuarioId = usuario.id;
+
+    fetch(`http://localhost:8082/perfil/${usuarioId}/aceptarSolicitud`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: solicitudId.toString() // Enviar el ID como string en lugar de JSON
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Solicitud de amistad aceptada');
+            document.getElementById(`solicitud-${solicitudId}`).remove();  // Eliminar del DOM
+        } else {
+            response.text().then(text => {
+                alert(`Error al aceptar la solicitud: ${text}`);
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error al aceptar la solicitud:', error);
+    });
+}
+
+// Rechazar solicitud de amistad
+function rechazarSolicitud(solicitudId) {
+    const usuarioStr = sessionStorage.getItem('usuario');
+    const usuario = JSON.parse(usuarioStr);
+    const usuarioId = usuario.id;
+
+    fetch(`http://localhost:8082/perfil/${usuarioId}/rechazarSolicitud`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: solicitudId.toString() // Enviar el ID como string en lugar de JSON
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Solicitud de amistad rechazada');
+            document.getElementById(`solicitud-${solicitudId}`).remove();  // Eliminar del DOM
+        } else {
+            response.text().then(text => {
+                alert(`Error al rechazar la solicitud: ${text}`);
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error al rechazar la solicitud:', error);
+    });
+}
+
+</script>
+
+<script src="cerrarSesion.js"></script>
+</body>
+</html>

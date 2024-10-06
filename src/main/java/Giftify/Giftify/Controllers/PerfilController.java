@@ -1,11 +1,14 @@
 package Giftify.Giftify.Controllers;
 
 import Giftify.Giftify.Models.Perfil;
+import Giftify.Giftify.Models.SolicitudDeAmistad;
 import Giftify.Giftify.Repositories.PerfilRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import Giftify.Giftify.Repositories.SolicitudDeAmistadRepository;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,8 @@ public class PerfilController {
 
     @Autowired
     private PerfilRepository perfilRepository;
+    @Autowired
+    private SolicitudDeAmistadRepository solicitudDeAmistadRepository;
 
     @GetMapping("/verperfil/{id}")
     public ResponseEntity<?> obtenerPerfil(@PathVariable Long id) {
@@ -92,6 +97,86 @@ public class PerfilController {
         return new ResponseEntity<>(perfilExistente, HttpStatus.OK);
     }
     //AMIGOS
+    @PostMapping("/{id}/solicitud")
+    public ResponseEntity<?> enviarSolicitudAmistad(@PathVariable Long id, @RequestParam Long amigoId) {
+        Optional<Perfil> perfilOpt = perfilRepository.findById(id);
+        Optional<Perfil> amigoOpt = perfilRepository.findById(amigoId);
+
+        if (perfilOpt.isPresent() && amigoOpt.isPresent()) {
+            Perfil emisor = perfilOpt.get();
+            Perfil receptor = amigoOpt.get();
+
+            // Verificar si ya existe una solicitud de amistad pendiente
+            Optional<SolicitudDeAmistad> solicitudExistente = solicitudDeAmistadRepository.findByEmisorAndReceptor(emisor, receptor);
+            if (solicitudExistente.isPresent()) {
+                return new ResponseEntity<>("Ya existe una solicitud de amistad pendiente a este usuario", HttpStatus.CONFLICT);
+            }
+
+            // Crear nueva solicitud de amistad
+            SolicitudDeAmistad nuevaSolicitud = new SolicitudDeAmistad(emisor, receptor, "PENDIENTE");
+            solicitudDeAmistadRepository.save(nuevaSolicitud);
+
+            return new ResponseEntity<>("Solicitud de amistad enviada exitosamente", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Perfil o amigo no encontrado", HttpStatus.NOT_FOUND);
+    }
+
+
+    @PostMapping("/{id}/aceptarSolicitud")
+    public ResponseEntity<?> aceptarSolicitudAmistad(@PathVariable Long id, @RequestBody Long solicitudId) {
+        Optional<SolicitudDeAmistad> solicitudOpt = solicitudDeAmistadRepository.findById(solicitudId);
+
+        if (!solicitudOpt.isPresent()) {
+            return new ResponseEntity<>("Solicitud de amistad no encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        SolicitudDeAmistad solicitud = solicitudOpt.get();
+
+        // Verificar si la solicitud pertenece al receptor actual y si está pendiente
+        if (solicitud.getReceptor().getIdPerfil().equals(id) && solicitud.getStatus().equals("PENDIENTE")) {
+            solicitud.setStatus("ACEPTADA");
+
+            Perfil emisor = solicitud.getEmisor();
+            Perfil receptor = solicitud.getReceptor();
+
+            // Agregar a ambos como amigos
+            emisor.getAmigos().add(receptor);
+            receptor.getAmigos().add(emisor);
+
+            perfilRepository.save(emisor);
+            perfilRepository.save(receptor);
+            solicitudDeAmistadRepository.save(solicitud);
+
+            return new ResponseEntity<>("Solicitud de amistad aceptada", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Error al aceptar la solicitud de amistad", HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/{id}/rechazarSolicitud")
+    public ResponseEntity<?> rechazarSolicitudAmistad(@PathVariable Long id, @RequestBody Long solicitudId) {
+        Optional<SolicitudDeAmistad> solicitudOpt = solicitudDeAmistadRepository.findById(solicitudId);
+
+        if (!solicitudOpt.isPresent()) {
+            return new ResponseEntity<>("Solicitud de amistad no encontrada", HttpStatus.NOT_FOUND);
+        }
+
+        SolicitudDeAmistad solicitud = solicitudOpt.get();
+
+        // Verificar si la solicitud pertenece al receptor actual y si está pendiente
+        if (solicitud.getReceptor().getIdPerfil().equals(id) && solicitud.getStatus().equals("PENDIENTE")) {
+            solicitud.setStatus("RECHAZADA");
+            solicitudDeAmistadRepository.save(solicitud);
+
+            return new ResponseEntity<>("Solicitud de amistad rechazada", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Error al rechazar la solicitud de amistad", HttpStatus.BAD_REQUEST);
+    }
+
+
+
     @PostMapping("/{id}/amigos")
     public ResponseEntity<?> agregarAmigo(@PathVariable Long id, @RequestParam Long amigoId) {
         Optional<Perfil> perfilOpt = perfilRepository.findById(id);
@@ -111,6 +196,18 @@ public class PerfilController {
         }
 
         return new ResponseEntity<>("Perfil o amigo no encontrado", HttpStatus.NOT_FOUND);
+    }
+    @GetMapping("/{id}/solicitudes")
+    public ResponseEntity<?> obtenerSolicitudesDeAmistad(@PathVariable Long id) {
+        Optional<Perfil> perfilOpt = perfilRepository.findById(id);
+        if (!perfilOpt.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Perfil perfil = perfilOpt.get();
+        List<SolicitudDeAmistad> solicitudes = solicitudDeAmistadRepository.findByReceptorAndStatus(perfil, "PENDIENTE");
+
+        return new ResponseEntity<>(solicitudes, HttpStatus.OK);
     }
 
     @GetMapping("/buscar")

@@ -44,7 +44,8 @@
         <h1 class="nombreCompleto">Nombre Apellido</h1>
         <p class="descripcionPerfil">Acá pondríamos una descripción si tuviéramos una</p>
         <a class="linkPerfil" href="#">www.unlinkqueponga.com</a>
-        <button class="add-friend-button" onclick="agregarAmigo(${perfilId}, this)">Agregar amigo</button>
+        <button class="add-friend-button" onclick="enviarSolicitudAmistad(${perfilId}, this)">Agregar amigo</button>
+
         <span class="friend-status"></span>
       </section>
       <section class="amigos">
@@ -63,169 +64,175 @@
   <script>
 
     document.addEventListener('DOMContentLoaded', function () {
-      const urlParams = new URLSearchParams(window.location.search);
-      const perfilId = urlParams.get('id');
-      const usuarioStr = sessionStorage.getItem('usuario');
+     const urlParams = new URLSearchParams(window.location.search);
+     const perfilId = urlParams.get('id');
+     const usuarioStr = sessionStorage.getItem('usuario');
 
-      if (!usuarioStr) {
-        alert('No se encontró el objeto de usuario en sessionStorage');
-        return;
-      }
+     if (!usuarioStr) {
+         alert('No se encontró el objeto de usuario en sessionStorage');
+         return;
+     }
 
-      const usuario = JSON.parse(usuarioStr);
-      const currentUserId = usuario.id;
+     const usuario = JSON.parse(usuarioStr);
+     const currentUserId = usuario.id;
 
-      if (!perfilId) {
-        alert('No se encontró el ID del perfil en la URL');
-        return;
-      }
+     if (!perfilId) {
+         alert('No se encontró el ID del perfil en la URL');
+         return;
+     }
 
-      // Obtener los datos del perfil
-      fetch(`http://localhost:8082/perfil/verperfil/${perfilId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error al obtener los datos del perfil');
-          }
-          return response.json();
-        })
-        .then(data => {
-          document.querySelector('.profile-img').src = data.fotoPerfil || '/static/placeholder.svg';
-          document.querySelector('.profile .nombreCompleto').textContent = `${data.nombre} ${data.apellido}`;
-          document.querySelector('.profile .descripcionPerfil').textContent = data.descripcion || 'No hay descripción disponible';
-          document.querySelector('.profile .linkPerfil').textContent = data.link || 'No hay enlace disponible';
-          document.querySelector('.profile .linkPerfil').href = data.link || '#';
-        })
-        .catch(error => {
-          console.error('Error al obtener datos del perfil:', error.message);
-        });
+     // Obtener los datos del perfil
+     fetch(`http://localhost:8082/perfil/verperfil/${perfilId}`)
+         .then(response => {
+             if (!response.ok) {
+                 throw new Error('Error al obtener los datos del perfil');
+             }
+             return response.json();
+         })
+         .then(data => {
+             document.querySelector('.profile-img').src = data.fotoPerfil || '/static/placeholder.svg';
+             document.querySelector('.profile .nombreCompleto').textContent = `${data.nombre} ${data.apellido}`;
+             document.querySelector('.profile .descripcionPerfil').textContent = data.descripcion || 'No hay descripción disponible';
+             document.querySelector('.profile .linkPerfil').textContent = data.link || 'No hay enlace disponible';
+             document.querySelector('.profile .linkPerfil').href = data.link || '#';
+         })
+         .catch(error => {
+             console.error('Error al obtener datos del perfil:', error.message);
+         });
 
-      // Obtener los amigos
-      fetch(`http://localhost:8082/perfil/${perfilId}/amigos`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error al obtener los amigos');
-          }
-          return response.json();
-        })
-        .then(amigos => {
-          const amigosContainer = document.querySelector('.amigos-list');
-          amigosContainer.innerHTML = '';  // Limpiar lista previa de amigos
-          amigos.forEach(amigo => {
-            const amigoItem = document.createElement('div');
-            amigoItem.classList.add('amigo-item');
-            amigoItem.innerHTML = `
-              <img src="${amigo.fotoPerfil || '/static/placeholder.svg'}" alt="Amigo Image" class="amigo-img">
-              <span>${amigo.nombre} ${amigo.apellido}</span>
-            `;
-            amigosContainer.appendChild(amigoItem);
-          });
-        })
-        .catch(error => {
-          console.error('Error al obtener amigos:', error.message);
-        });
+     // Obtener los amigos
+     fetch(`http://localhost:8082/perfil/${perfilId}/amigos`)
+         .then(response => {
+             if (!response.ok) {
+                 throw new Error('Error al obtener los amigos');
+             }
+             return response.json();
+         })
+         .then(amigos => {
+             const amigosContainer = document.querySelector('.amigos-list');
+             amigosContainer.innerHTML = '';  // Limpiar lista previa de amigos
+             amigos.forEach(amigo => {
+                 const amigoItem = document.createElement('div');
+                 amigoItem.classList.add('amigo-item');
+                 amigoItem.innerHTML = `
+                     <img src="${amigo.fotoPerfil || '/static/placeholder.svg'}" alt="Amigo Image" class="amigo-img">
+                     <span>${amigo.nombre} ${amigo.apellido}</span>
+                 `;
+                 amigosContainer.appendChild(amigoItem);
+             });
+         })
+         .catch(error => {
+             console.error('Error al obtener amigos:', error.message);
+         });
 
-      // Verificar si son amigos
-      fetch(`http://localhost:8082/perfil/${currentUserId}/esamigo/${perfilId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error al verificar el estado de amistad');
-          }
-          return response.json();
-        })
-        .then(isFriend => {
-          const friendButton = document.querySelector('.add-friend-button');
-          const friendStatus = document.querySelector('.friend-status');
-          if (isFriend) {
-            friendButton.style.display = 'none';
-            friendStatus.textContent = 'Ya son amigos';
-          } else {
-            friendButton.style.display = 'block';
-            friendButton.onclick = () => agregarAmigo(perfilId, friendButton);
-          }
-        })
-        .catch(error => {
-          console.error('Error al verificar estado de amistad:', error.message);
-        });
+     // Verificar si son amigos
+     fetch(`http://localhost:8082/perfil/${currentUserId}/esamigo/${perfilId}`)
+         .then(response => {
+             if (!response.ok) {
+                 throw new Error('Error al verificar el estado de amistad');
+             }
+             return response.json();
+         })
+         .then(isFriend => {
+             const friendButton = document.querySelector('.add-friend-button');
+             const friendStatus = document.querySelector('.friend-status');
+             if (isFriend) {
+                 friendButton.style.display = 'none';
+                 friendStatus.textContent = 'Ya son amigos';
+             } else {
+                 friendButton.style.display = 'block';
+                 friendButton.onclick = () => enviarSolicitudAmistad(perfilId, friendButton);
+             }
+         })
+         .catch(error => {
+             console.error('Error al verificar estado de amistad:', error.message);
+         });
 
-      // Obtener las publicaciones del perfil
-      fetch(`http://localhost:8082/publicaciones/${perfilId}/usuario/${currentUserId}/publicaciones`)
-        .then(response => {
-          if (!response.ok) {
-            if (response.status === 403) {
-              document.getElementById('publicaciones').innerHTML = '<p>Perfil privado. Agrega como amigo para ver publicaciones.</p>';
-            } else if (response.status === 404) {
-              document.getElementById('publicaciones').innerHTML = '<p>No se encontraron publicaciones.</p>';
-            } else {
-              throw new Error('Error al cargar publicaciones.');
-            }
-            return null;  // Detener ejecución si hay error en la respuesta
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (!data) return;  // Detener si no hay datos
+     // Obtener las publicaciones del perfil
+     fetch(`http://localhost:8082/publicaciones/${perfilId}/usuario/${currentUserId}/publicaciones`)
+         .then(response => {
+             if (!response.ok) {
+                 if (response.status === 403) {
+                     document.getElementById('publicaciones').innerHTML = '<p>Perfil privado. Agrega como amigo para ver publicaciones.</p>';
+                 } else if (response.status === 404) {
+                     document.getElementById('publicaciones').innerHTML = '<p>No se encontraron publicaciones.</p>';
+                 } else {
+                     throw new Error('Error al cargar publicaciones.');
+                 }
+                 return null;  // Detener ejecución si hay error en la respuesta
+             }
+             return response.json();
+         })
+         .then(data => {
+             if (!data) return;  // Detener si no hay datos
 
-          const publicacionesDiv = document.getElementById('publicaciones');
-          publicacionesDiv.innerHTML = '';  // Limpiar publicaciones previas
+             const publicacionesDiv = document.getElementById('publicaciones');
+             publicacionesDiv.innerHTML = '';  // Limpiar publicaciones previas
 
-          if (data.length === 0) {
-            publicacionesDiv.innerHTML = '<p>No hay publicaciones disponibles.</p>';
-            return;
-          }
+             if (data.length === 0) {
+                 publicacionesDiv.innerHTML = '<p>No hay publicaciones disponibles.</p>';
+                 return;
+             }
 
-          data.forEach(publicacion => {
-            const pubDiv = document.createElement('div');
-            pubDiv.className = 'publicacion';
-            pubDiv.innerHTML = `
-              <div class="perfil-info">
-                ${publicacion.fotoPerfil ? `<img src="${publicacion.fotoPerfil}" alt="Foto de perfil">` : ''}
-                <p>${publicacion.nombrePerfil} ${publicacion.apellidoPerfil}</p>
-              </div>
-              <div class="publicacion-descripcion">
-                <p>${publicacion.descripcionPublicacion}</p>
-              </div>
-              ${publicacion.fotoPublicacion ? `
-                <div class="publicacion-foto">
-                  <img src="${publicacion.fotoPublicacion}" alt="Foto de la publicación">
-                </div>` : ''}
-              <div class="publicacion-fecha">
-                <p>${new Date(publicacion.fechaHoraPublicado).toLocaleString()}</p>
-              </div>
-            `;
-            publicacionesDiv.appendChild(pubDiv);
-          });
-        })
-        .catch(error => {
-          console.error('Error al obtener publicaciones:', error.message);
-          document.getElementById('publicaciones').innerHTML = `<p>Error: ${error.message}. Inténtalo más tarde.</p>`;
-        });
-    });
+             data.forEach(publicacion => {
+                 const pubDiv = document.createElement('div');
+                 pubDiv.className = 'publicacion';
+                 pubDiv.innerHTML = `
+                     <div class="perfil-info">
+                         ${publicacion.fotoPerfil ? `<img src="${publicacion.fotoPerfil}" alt="Foto de perfil">` : ''}
+                         <p>${publicacion.nombrePerfil} ${publicacion.apellidoPerfil}</p>
+                     </div>
+                     <div class="publicacion-descripcion">
+                         <p>${publicacion.descripcionPublicacion}</p>
+                     </div>
+                     ${publicacion.fotoPublicacion ? `
+                         <div class="publicacion-foto">
+                             <img src="${publicacion.fotoPublicacion}" alt="Foto de la publicación">
+                         </div>` : ''}
+                     <div class="publicacion-fecha">
+                         <p>${new Date(publicacion.fechaHoraPublicado).toLocaleString()}</p>
+                     </div>
+                 `;
+                 publicacionesDiv.appendChild(pubDiv);
+             });
+         })
+         .catch(error => {
+             console.error('Error al obtener publicaciones:', error.message);
+             document.getElementById('publicaciones').innerHTML = `<p>Error: ${error.message}. Inténtalo más tarde.</p>`;
+         });
+ });
 
-    function agregarAmigo(amigoId, button) {
-      const usuarioStr = sessionStorage.getItem('usuario');
-      const usuario = JSON.parse(usuarioStr);
-      const perfilId = usuario.id;
+ function enviarSolicitudAmistad(amigoId, button) {
+     const usuarioStr = sessionStorage.getItem('usuario');
+     const usuario = JSON.parse(usuarioStr);
+     const perfilId = usuario.id;
 
-      fetch(`http://localhost:8082/perfil/${perfilId}/amigos`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `amigoId=${amigoId}`,
-      })
-        .then(response => {
-          if (response.ok) {
-            alert('Amigo agregado con éxito');
-            button.disabled = true;
-            button.textContent = 'Ya son amigos';
-          } else {
-            alert('Error al agregar amigo');
-          }
-        })
-        .catch(error => {
-          console.error('Error al agregar amigo:', error.message);
-        });
-    }
+     // Realizar la solicitud POST para enviar la solicitud de amistad
+     fetch(`http://localhost:8082/perfil/${perfilId}/solicitud`, {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/x-www-form-urlencoded',
+         },
+         body: `amigoId=${amigoId}`, // Enviar el ID del amigo
+     })
+         .then(response => {
+             if (response.ok) {
+                 alert('Solicitud de amistad enviada');
+                 button.disabled = true;
+                 button.textContent = 'Solicitud enviada';
+             } else if (response.status === 409) {
+                 alert('Ya has enviado una solicitud de amistad a este usuario');
+                 button.disabled = true;
+                 button.textContent = 'Solicitud pendiente';
+             } else {
+                 alert('Error al enviar la solicitud de amistad');
+             }
+         })
+         .catch(error => {
+             console.error('Error al enviar solicitud de amistad:', error.message);
+         });
+ }
+
   </script>
 
 
