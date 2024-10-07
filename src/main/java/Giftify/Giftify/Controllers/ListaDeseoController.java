@@ -57,6 +57,29 @@ public class ListaDeseoController {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/{perfilId}/usuario/{usuarioId}/listasdeseos")
+    public ResponseEntity<?> obtenerListasDeseosConPrivacidad(@PathVariable Long perfilId, @PathVariable Long usuarioId) {
+        Optional<Perfil> optionalPerfil = perfilRepository.findById(perfilId);
+        Optional<Perfil> optionalUsuario = perfilRepository.findById(usuarioId);
+
+        if (!optionalPerfil.isPresent() || !optionalUsuario.isPresent()) {
+            return new ResponseEntity<>("Perfil no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Perfil perfil = optionalPerfil.get();
+        Perfil usuario = optionalUsuario.get();
+        boolean esAmigo = perfil.getAmigos().stream().anyMatch(amigo -> amigo.getIdPerfil().equals(usuario.getIdPerfil()));
+
+        // Si el perfil es público o son amigos, mostrar las listas de deseos
+        if (!perfil.isEsprivada() || esAmigo) {
+            List<ListaDeseo> listasDeseos = listaDeseoRepository.findByPerfil(perfil);
+            return new ResponseEntity<>(listasDeseos, HttpStatus.OK);
+        }
+
+        // Si no son amigos y el perfil es privado, no mostrar las listas de deseos
+        return new ResponseEntity<>("El perfil es privado y no son amigos", HttpStatus.FORBIDDEN);
+    }
+
     @GetMapping("/perfil/{idPerfil}")
     public ResponseEntity<?> obtenerListasPorPerfil(@PathVariable Long idPerfil) {
         Optional<Perfil> optionalPerfil = perfilRepository.findById(idPerfil);

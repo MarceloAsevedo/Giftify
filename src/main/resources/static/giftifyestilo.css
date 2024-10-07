@@ -181,3 +181,20 @@ a {
   border-radius: 50%;
   margin-bottom: 10px;
 }
+.wishlists {
+  margin-top: 20px;
+}
+
+.lista-deseo {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.lista-deseo h3 {
+  margin: 0;
+}
+
+.deseo {
+  padding-left: 20px;
+}

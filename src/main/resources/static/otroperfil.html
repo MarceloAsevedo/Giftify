@@ -52,8 +52,10 @@
         <h2>Amigos</h2>
         <div class="amigos-list"></div>
       </section>
-
-      <section class="publications">
+      <section class="verlistas">
+        <a id="verListasBtn" class="btn btn-secondary" href="#">Ver Listas de Deseos</a>
+      </section>
+        <section class="publications">
         <h2>Publicaciones</h2>
         <div id="publicaciones">
 
@@ -232,7 +234,16 @@
              console.error('Error al enviar solicitud de amistad:', error.message);
          });
  }
+document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const perfilId = urlParams.get('id');  // Obtener ID del perfil que estás visitando
 
+    if (perfilId) {
+        // Construir la URL para redirigir a listaotro.html con el perfilId
+        const verListasBtn = document.getElementById('verListasBtn');
+        verListasBtn.href = `listaotro.html?id=${perfilId}`;  // Asignar el href dinámicamente
+    }
+});
   </script>
 
 
