@@ -2,7 +2,7 @@ package Giftify.Giftify.Models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
+//se pudo
 @Entity
 @Table(name = "solicitud_amistad")
 public class SolicitudDeAmistad {
