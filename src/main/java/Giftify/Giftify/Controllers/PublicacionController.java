@@ -175,7 +175,7 @@ public class PublicacionController {
 
         return new ResponseEntity<>(publicaciones, HttpStatus.OK);
     }
-
+//HOLIS
     private String guardarFotoPublicacion(MultipartFile fotoPublicacion) throws IOException {
         String directory = "static/publicaciones/";
         String filename = fotoPublicacion.getOriginalFilename();
