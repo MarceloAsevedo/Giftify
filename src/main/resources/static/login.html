@@ -4,54 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giftify</title>
-    <link rel="stylesheet" href="loginyregistro.css">
+
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <div class="contenedor">
-        <div class="imagen">
-            <img src="imagenes/foto1.avif" alt="fotito de regalos"/>
-        </div>
-        <div class="formulario">
-            <h1>GIFTIFY</h1>
-            <h2>Inicio de Sesión</h2>
-            <form id="loginForm">
-                <label for="email">Correo electrónico:</label>
-                <input class="botones" type="email" placeholder="Ejemplo: matiasfernandez@gmail.com" id="email" required>
-                <label for="password">Contraseña:</label>
-                <input class="botones" type="password" placeholder="Ejemplo: mati1234" id="password" required>
-                <button type="submit">Ingresar</button>
-                <h4>¿Aun no tienes cuenta? <a href="registro.html">Registrate aqui</a></h4>
-            </form>
-        </div>
+<div class="contenedor">
+    <div class="imagen">
+        <img src="imagenes/foto1.avif" alt="fotito de regalos"/>
     </div>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const form = event.target;
-            const mail = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+    <div class="formulario">
+        <h1>GIFTIFY</h1>
+        <h2>Inicio de Sesión</h2>
+        <form id="loginForm">
+            <label for="email">Correo electrónico:</label>
+            <input class="botones" type="email" placeholder="Ejemplo: matiasfernandez@gmail.com" id="email" required>
+            <label for="password">Contraseña:</label>
+            <input class="botones" type="password" placeholder="Ejemplo: mati1234" id="password" required>
+            <button type="submit">Ingresar</button>
+            <h4>¿Aun no tienes cuenta? <a href="registro.html">Registrate aqui</a></h4>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = event.target;
+        const mail = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-            fetch('/usuarios/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ mail, password })
-            }).then(response => {
-                return response.json().then(data => {
-                    if (response.ok) {
-                        form.reset(); // Limpia el formulario
-                        alert('Login exitoso');
-                        sessionStorage.setItem('usuario', JSON.stringify(data)); // Guarda solo el correo del dto
-                        window.location.href = 'inicio.html'; // Redirecciona a inicio.html
-                    } else {
-                        alert('data'); // Muestra el mensaje de error
-                    }
-                });
-            }).catch(error => {
-                console.error('Error:', error);
+        fetch('/usuarios/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ mail, password })
+        }).then(response => {
+            return response.json().then(data => {
+                if (response.ok) {
+                    form.reset(); // Limpia el formulario
+                    alert('Login exitoso');
+                    sessionStorage.setItem('usuario', JSON.stringify(data)); // Guarda solo el correo del dto
+                    window.location.href = 'inicio.html'; // Redirecciona a inicio.html
+                } else {
+                    alert('data'); // Muestra el mensaje de error
+                }
             });
+        }).catch(error => {
+            console.error('Error:', error);
         });
-    </script>
+    });
+</script>
 </body>
 </html>
