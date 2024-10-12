@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Chats</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="giftifyestilo.css">
+    <style>
+        .chat-list {
+            margin-top: 20px;
+        }
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .chat-item img {
+            border-radius: 50%;
+            margin-right: 15px;
+            width: 50px;
+            height: 50px;
+        }
+        .chat-item:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+            <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+            <path d="M12 8v13"></path>
+            <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+            <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+        </svg>
+        <span>LOGO</span>
+    </div>
+</header>
+
+<div class="container">
+    <aside class="sidebar">
+        <nav>
+            <button class="button" onclick="location.href='inicio.html'">Inicio</button>
+            <button class="button" onclick="location.href='perfil.html'">Perfil</button>
+            <button class="button" onclick="location.href='publicar.html'">Publicar</button>
+            <button class="button" onclick="location.href='buscar.html'">Buscar</button>
+            <button class="button" onclick="location.href='chat.html'">Mensajes</button>
+            <button class="button" onclick="location.href='Listadeseos.html'">Mis Listas</button>
+            <button class="button" onclick="location.href='perfil.html'">Notificaciones</button>
+            <button class="button" onclick="location.href='seguridadyprivacidad.html'">Seguridad y privacidad</button>
+            <button class="button" onclick="location.href='editarperfil.html'">Editar perfil</button>
+            <button class="button" id="logoutButton">Cerrar Sesión</button>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>Mis Conversaciones</h1>
+        <div id="chatList" class="chat-list"></div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const usuarioStr = sessionStorage.getItem('usuario');
+    if (!usuarioStr) {
+        alert('No se encontró el objeto de usuario en sessionStorage');
+        return;
+    }
+
+    const usuario = JSON.parse(usuarioStr);
+    const perfilId = usuario.id;
+
+    // Llamar al backend para obtener la lista de conversaciones del usuario logueado
+    fetch(`http://localhost:8082/chat/conversaciones/${perfilId}`)
+        .then(response => response.json())
+        .then(conversaciones => {
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = ''; // Limpiar la lista de chats
+
+            conversaciones.forEach(conversacion => {
+                const chatId = conversacion.chatId;
+                const otroPerfil = conversacion.otroPerfil;
+
+                // Crear el elemento de chat en la lista
+                const chatItem = document.createElement('div');
+                chatItem.classList.add('chat-item');
+                chatItem.innerHTML = `
+                    <img src="${otroPerfil.fotoPerfil || '/static/placeholder.svg'}" alt="Imagen del perfil">
+                    <span>${otroPerfil.nombre} ${otroPerfil.apellido}</span>
+                `;
+                chatItem.addEventListener('click', () => {
+                    // Redirigir al chat privado con el chatId correspondiente
+                    window.location.href = `chatprivado.html?chatId=${chatId}`;
+                });
+                chatList.appendChild(chatItem);
+            });
+        })
+        .catch(error => {
+            console.error('Error al obtener la lista de conversaciones:', error);
+        });
+});
+
+
+</script>
+</body>
+</html>

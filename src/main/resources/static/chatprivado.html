@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Privado</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="giftifyestilo.css">
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll;
+            background-color: #f9f9f9;
+        }
+        .mensaje {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 60%;
+            color: white;
+        }
+        .mensaje.emisor {
+            align-self: flex-end;
+            background-color: red; /* Rojo para el emisor (usuario en sesión) */
+        }
+        .mensaje.receptor {
+            align-self: flex-start;
+            background-color: gray; /* Gris para el receptor */
+        }
+        .input-mensaje {
+            display: flex;
+            margin-top: auto;
+        }
+        .input-mensaje input {
+            flex: 1;
+            padding: 10px;
+        }
+        .input-mensaje button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+            <rect x="3" y="8" width="18" height="4" rx="1"></rect>
+            <path d="M12 8v13"></path>
+            <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+            <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+        </svg>
+        <span>LOGO</span>
+    </div>
+</header>
+
+<div class="container">
+    <main class="main-content">
+        <h1>Chat Privado con</h1>
+        <div id="receptorInfo" style="display: flex; align-items: center;">
+            <img id="receptorFoto" src="/static/placeholder.svg" alt="Foto del receptor" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+            <span id="nombreReceptor"></span>
+        </div>
+
+        <!-- Agregar el contenedor del chat aquí -->
+        <div id="chatContainer" class="chat-container"></div>
+
+        <div class="input-mensaje">
+            <input type="text" id="mensajeInput" placeholder="Escribe un mensaje...">
+            <button class="btn btn-primary" id="enviarMensajeBtn">Enviar</button>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatId = urlParams.get('chatId');  // Obtener el chatId de la URL
+        const usuarioStr = sessionStorage.getItem('usuario');
+
+        if (!usuarioStr || !chatId) {
+            alert('Error: falta información del chat.');
+            return;
+        }
+
+        const usuario = JSON.parse(usuarioStr);
+        const emisorId = usuario.id;
+
+        // Función para cargar el historial de mensajes
+        function cargarHistorialMensajes() {
+            fetch(`http://localhost:8082/chat/historial?chatId=${chatId}`)
+                .then(response => response.json())
+                .then(mensajes => {
+                    const chatContainer = document.getElementById('chatContainer');
+                    chatContainer.innerHTML = '';  // Limpiar el contenedor de mensajes
+
+                    mensajes.forEach(mensaje => {
+                        const mensajeDiv = document.createElement('div');
+                        mensajeDiv.classList.add('mensaje');
+                        mensajeDiv.textContent = mensaje.contenido;
+
+                        // Verificar si el emisor del mensaje es el usuario en sesión
+                        if (mensaje.emisor.idPerfil === emisorId) {
+                            mensajeDiv.classList.add('emisor'); // Mensaje del usuario en sesión (rojo)
+                        } else {
+                            mensajeDiv.classList.add('receptor'); // Mensaje del otro usuario (gris)
+                        }
+
+                        chatContainer.appendChild(mensajeDiv);
+                    });
+
+                    // Desplazar al final del chat
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error al cargar el historial del chat:', error.message);
+                });
+        }
+
+        // Función para cargar los detalles del receptor (nombre y foto)
+        function cargarDetallesReceptor() {
+            fetch(`http://localhost:8082/chat/detalleChat?chatId=${chatId}`)
+                .then(response => response.json())
+                .then(chat => {
+                    const otroPerfil = chat.emisor.idPerfil === emisorId ? chat.receptor : chat.emisor;
+
+                    // Mostrar la información del receptor (nombre, apellido y foto)
+                    document.getElementById('receptorFoto').src = otroPerfil.fotoPerfil || '/static/placeholder.svg';
+                    document.getElementById('nombreReceptor').textContent = `${otroPerfil.nombre} ${otroPerfil.apellido}`;
+                })
+                .catch(error => {
+                    console.error('Error al cargar los detalles del chat:', error.message);
+                });
+        }
+
+        // Cargar el historial de mensajes al iniciar la página
+        cargarHistorialMensajes();
+
+        // Cargar los detalles del receptor (nombre y foto)
+        cargarDetallesReceptor();
+
+        // Configurar el botón de enviar mensaje
+        document.getElementById('enviarMensajeBtn').addEventListener('click', function () {
+            const mensajeInput = document.getElementById('mensajeInput').value.trim();
+
+            if (mensajeInput === '') {
+                alert('No puedes enviar un mensaje vacío.');
+                return;
+            }
+
+            // Enviar mensaje al servidor
+            fetch(`http://localhost:8082/chat/enviarMensaje`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `emisorId=${emisorId}&chatId=${chatId}&contenido=${mensajeInput}`,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al enviar mensaje');
+                }
+                return response.json();
+            })
+            .then(mensaje => {
+                // Mostrar el mensaje recién enviado
+                const mensajeDiv = document.createElement('div');
+                mensajeDiv.classList.add('mensaje', 'emisor');
+                mensajeDiv.textContent = mensaje.contenido;
+                document.getElementById('chatContainer').appendChild(mensajeDiv);
+
+                // Limpiar el input
+                document.getElementById('mensajeInput').value = '';
+
+                // Desplazar al final del chat
+                document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+            })
+            .catch(error => {
+                console.error('Error al enviar mensaje:', error.message);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
+
