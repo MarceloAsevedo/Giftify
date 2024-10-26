@@ -1,0 +1,165 @@
+/* Estilo general del body */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fd;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ccc;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo .icon {
+    margin-right: 8px;
+}
+
+.logo span {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Header icon menu */
+.header .icon {
+    cursor: pointer;
+}
+
+/* Contenedor principal */
+.container {
+    display: flex;
+}
+
+/* Sidebar a la izquierda */
+.sidebar {
+    width: 250px;
+    padding: 15px;
+    background-color: #e0e0e0;
+}
+
+/* Botones del menú lateral */
+.button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    color: rgb(255, 82, 82);
+    border: 2px solid rgb(255, 82, 82);
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: rgba(255, 82, 82, 0.2) 0px 10px 10px -5px;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+    font-size: 16px;
+}
+
+.button:hover {
+    background-color: rgb(255, 82, 82);
+    color: white;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f8f9fd;
+}
+
+/* Títulos */
+.main-content h1, .main-content h2 {
+    color: rgb(255, 82, 82);
+}
+
+/* Estilos de las solicitudes de amistad */
+.solicitudes-amistad {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.solicitud-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.solicitud-item:last-child {
+    border-bottom: none;
+}
+
+.solicitud-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+/* Botones aceptar y rechazar */
+.accept-button, .reject-button {
+    background-color: rgb(255, 82, 82);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.accept-button:hover {
+    background-color: rgb(76, 175, 80);
+}
+
+.reject-button:hover {
+    background-color: rgb(244, 67, 54);
+}
+
+/* Estilo de enlaces */
+a {
+    color: rgb(255, 82, 82);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .main-content {
+        padding: 15px;
+    }
+
+    .header {
+        flex-direction: column;
+    }
+}
+.logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover; /* Mantiene las proporciones de la imagen */
+}

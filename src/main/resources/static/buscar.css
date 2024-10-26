@@ -1,0 +1,122 @@
+/* Estilo general del body */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fd;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ccc;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+/* Contenedor principal */
+.container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 25%;
+    padding: 10px;
+    background-color: #e0e0e0;
+}
+
+/* Botones del menú lateral */
+.button {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    color: rgb(255, 82, 82);
+    border: 2px solid rgb(255, 82, 82);
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: rgba(255, 82, 82, 0.2) 0px 10px 10px -5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.button:hover {
+    background-color: rgb(255, 82, 82);
+    color: white;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f8f9fd;
+}
+
+/* Caja de resultados de búsqueda */
+.search-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Resultados de búsqueda */
+.search-result {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.search-result:hover {
+    background-color: #f1f1f1;
+}
+
+.search-result img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-info p {
+    font-weight: bold;
+    color: rgb(255, 82, 82);
+    margin: 0;
+}
+.logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover; /* Mantiene las proporciones de la imagen */
+}

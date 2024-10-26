@@ -1,0 +1,193 @@
+/* Estilo general del body */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fd;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ccc;
+}
+
+/* Logo y navegación del header */
+.logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover; /* Mantiene las proporciones de la imagen */
+}
+
+
+/* Contenedor principal */
+.container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* Sidebar a la izquierda */
+.sidebar {
+    width: 25%;
+    padding: 10px;
+    background-color: #e0e0e0;
+}
+
+/* Botones del menú lateral */
+.button {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    color: rgb(255, 82, 82);
+    border: 2px solid rgb(255, 82, 82);
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: rgba(255, 82, 82, 0.2) 0px 10px 10px -5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.button:hover {
+    background-color: rgb(255, 82, 82);
+    color: white;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f8f9fd;
+}
+
+/* Estilos del perfil */
+.profile {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    text-align: center;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Sección de amigos */
+.amigos {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    text-align: center;
+}
+
+.amigos-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.amigo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.amigo-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+/* Publicaciones: Cada publicación */
+.publicacion {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos en una columna */
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+/* Imagen de perfil en la publicación */
+.perfil-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Separación entre perfil y contenido */
+}
+
+.perfil-info img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%; /* Hace que la imagen de perfil sea circular */
+    margin-right: 10px;
+}
+
+.perfil-info p {
+    font-weight: bold;
+    color: rgb(255, 82, 82);
+    margin: 0;
+}
+
+/* Descripción de la publicación */
+.publicacion-descripcion {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #333;
+}
+
+/* Imagen de la publicación (cuadrada) */
+.publicacion-foto {
+    width: 100%; /* Ocupa el ancho completo del contenedor */
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.publicacion-foto img {
+    width: 100%;
+    max-width: 500px; /* Limita el tamaño máximo de la imagen */
+    height: 500px; /* Altura fija para que sea cuadrada */
+    object-fit: cover; /* Asegura que la imagen se ajuste al tamaño sin deformarse */
+    border-radius: 8px;
+}
+
+/* Fecha de la publicación */
+.publicacion-fecha {
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+    width: 100%;
+}
+
+
+/* Enlaces */
+a {
+    color: rgb(255, 82, 82);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

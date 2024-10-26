@@ -1,21 +1,18 @@
+<!-- Ajustado en HTML y JavaScript -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giftify - Publicar</title>
-    <link rel="stylesheet" href="giftifyestilo.css">
+    <link rel="stylesheet" href="publicar.css">
 </head>
 <body>
 <header class="header">
     <div class="logo">
-        <!-- SVG del logo -->
+        <img src="imagenes/logogiftify-sinfondo.png">
+        <span>Giftify</span>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
-        <line x1="4" x2="20" y1="12" y2="12"></line>
-        <line x1="4" x2="20" y1="6" y2="6"></line>
-        <line x1="4" x2="20" y1="18" y2="18"></line>
-    </svg>
 </header>
 <div class="container">
     <aside class="sidebar">
@@ -43,8 +40,13 @@
                 <label for="fotoPublicacion">Foto de la Publicación:</label>
                 <input type="file" id="fotoPublicacion" name="fotoPublicacion" accept="image/*">
 
-                <label for="esPublica">¿Quieres que sea pública?</label>
-                <input type="checkbox" id="esPublica" name="esPublica">
+                <label for="privado">¿Quieres que sea pública?</label>
+                <div class="toggle-border">
+                    <input type="checkbox" id="privado" name="privado">
+                    <label for="privado">
+                        <div class="handle"></div>
+                    </label>
+                </div>
 
                 <input type="hidden" id="idPerfil" name="idPerfil">
 
@@ -68,34 +70,34 @@
             document.getElementById('idPerfil').value = idPerfil;
         });
 
-        document.getElementById('publicacionForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
+       document.getElementById('publicacionForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
 
-            // Si el checkbox no está marcado, la publicación será privada por defecto
-            if (!document.getElementById('esPublica').checked) {
-                formData.append('esPrivada', 'true'); // Envío al backend que la publicación es privada
-            } else {
-                formData.append('esPrivada', 'false'); // Si está marcada, es pública
-            }
+    // Asegúrate de enviar 'privado' como "true" o "false" para que Spring Boot lo interprete correctamente
+    const esPublica = document.getElementById('privado').checked;
+    formData.set('privado', String(!esPublica)); // 'true' para privada, 'false' para pública
 
-            fetch('/publicaciones/nueva', {
-                method: 'POST',
-                body: formData
-            }).then(response => response.json().then(data => {
-                if (response.ok) {
-                    form.reset(); // Limpia el formulario
-                    alert('Publicación exitosa');
-                    window.location.href = 'inicio.html'; // Redirecciona a inicio.html
-                } else {
-                    alert(data.message || 'Error al publicar'); // Muestra el mensaje de error
-                }
-            })).catch(error => {
-                console.error('Error:', error);
-                alert('Error en la solicitud');
-            });
-        });
+    fetch('/publicaciones/nueva', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json().then(data => {
+        if (response.ok) {
+            form.reset(); // Limpia el formulario
+            alert('Publicación exitosa');
+            window.location.href = 'inicio.html'; // Redirecciona a inicio.html
+        } else {
+            alert(data.message || 'Error al publicar'); // Muestra el mensaje de error
+        }
+    }))
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error en la solicitud');
+    });
+});
+
     </script>
     <script src="cerrarSesion.js"></script>
 </body>

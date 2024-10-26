@@ -1,0 +1,193 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fd;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ccc;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 25%;
+    padding: 10px;
+    background-color: #e0e0e0;
+}
+
+.button {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    color: rgb(255, 82, 82);
+    border: 2px solid rgb(255, 82, 82);
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: rgba(255, 82, 82, 0.2) 0px 10px 10px -5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.button:hover {
+    background-color: rgb(255, 82, 82);
+    color: white;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f8f9fd;
+}
+
+.main-content h1, .main-content h2 {
+    font-size: 24px;
+    color: rgb(255, 82, 82);
+    margin-bottom: 20px;
+}
+
+/* Listas de Deseos */
+.listas-container {
+    margin-bottom: 20px;
+}
+
+.lista-deseos {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.nombre-lista {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(255, 82, 82);
+    cursor: pointer;
+}
+
+.lista-deseos button {
+    margin: 5px 5px 5px 0;
+}
+
+/* Deseos dentro de cada Lista */
+.deseos {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.deseos li {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    background-color: #f8f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.deseos li img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+}
+
+.deseos li p {
+    margin: 0;
+    color: #333;
+}
+
+.deseos li label {
+    font-weight: bold;
+    color: rgb(255, 82, 82);
+}
+
+/* Buttons for Editing and Deleting */
+.editar, .eliminar {
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    color: white;
+}
+
+.editar {
+    background-color: #f0ad4e; /* Bootstrap Warning color */
+    border: none;
+}
+
+.eliminar {
+    background-color: #d9534f; /* Bootstrap Danger color */
+    border: none;
+}
+
+/* Edit Form */
+.edit-form {
+    display: none;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.edit-form input[type="text"],
+.edit-form input[type="url"],
+.edit-form input[type="file"],
+.edit-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.edit-form button {
+    margin-right: 5px;
+}
+
+/* Toggle Visibility */
+.edit-form .btn-primary {
+    background-color: rgb(255, 82, 82);
+    border: none;
+}
+
+.edit-form .btn-secondary {
+    background-color: #6c757d; /* Bootstrap Secondary color */
+    border: none;
+}
+.logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover; /* Mantiene las proporciones de la imagen */
+}
