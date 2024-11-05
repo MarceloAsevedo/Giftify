@@ -15,7 +15,7 @@ public class Deseo {
     @Column(name = "titulo_deseo", nullable = false)
     private String tituloDeseo;
 
-    @Column(name = "url", nullable = true, length = 255)
+    @Column(name = "url", nullable = true, length = 1000)
     private String url;
 
     @Column(name = "imagen", nullable = true)
