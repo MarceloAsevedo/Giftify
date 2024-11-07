@@ -13,7 +13,10 @@ body {
     padding: 10px;
     background-color: #ccc;
 }
-
+.logo span {
+    font-weight: bold;
+    font-size: 18px;
+}
 .header .logo {
     display: flex;
     align-items: center;

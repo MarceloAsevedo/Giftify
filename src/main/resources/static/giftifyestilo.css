@@ -18,6 +18,10 @@ body {
     display: flex;
     align-items: center;
 }
+.logo span {
+    font-weight: bold;
+    font-size: 18px;
+}
 
 .logo img {
     width: 40px;

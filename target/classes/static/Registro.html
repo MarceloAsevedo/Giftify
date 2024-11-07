@@ -42,6 +42,12 @@
             </div>
             <span id="estadoPerfil">Público</span>
 
+            <!-- Checkbox de términos y condiciones -->
+            <label for="aceptaTerminos" class="terminos">
+                <input type="checkbox" id="aceptaTerminos" name="aceptaTerminos" required>
+                Acepto los <a href="https://docs.google.com/document/d/1_45UTv3_hYiu0Y5kHeiaTPYExy0CYcjxSxVnLU8YIQI/edit?usp=sharing" target="_blank">Términos y Condiciones de uso</a> y las <a href="https://docs.google.com/document/d/1_45UTv3_hYiu0Y5kHeiaTPYExy0CYcjxSxVnLU8YIQI/edit?usp=sharing" target="_blank">Políticas de Privacidad</a>.
+            </label>
+
             <button type="submit">Registrarse</button>
 
             <h4><a href="login.html">¿Ya tienes cuenta?</a></h4>
@@ -50,58 +56,63 @@
 </div>
 <script>
     // Detectar el cambio en el estado del checkbox y cambiar el texto de "Público" a "Privado"
- document.getElementById('esprivada').addEventListener('change', function() {
-     const estadoPerfil = document.getElementById('estadoPerfil');
-     estadoPerfil.textContent = this.checked ? 'Privado' : 'Público';
- });
+    document.getElementById('esprivada').addEventListener('change', function() {
+        const estadoPerfil = document.getElementById('estadoPerfil');
+        estadoPerfil.textContent = this.checked ? 'Privado' : 'Público';
+    });
 
- // Manejador para el envío del formulario
- document.getElementById('registroForm').addEventListener('submit', function(event) {
-     event.preventDefault(); // Evitar el envío estándar del formulario
+    // Manejador para el envío del formulario
+    document.getElementById('registroForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evitar el envío estándar del formulario
 
-     // Crear FormData con los datos del formulario
-     const formData = new FormData();
-     formData.append('nombre', document.getElementById('nombre').value);
-     formData.append('apellido', document.getElementById('apellido').value);
-     formData.append('fechaNacimiento', document.getElementById('fechanacimiento').value);
-     formData.append('mail', document.getElementById('mail').value);
-     formData.append('password', document.getElementById('password').value);
-     formData.append('repetirPassword', document.getElementById('repetirPassword').value);
+        // Verificar que se acepten los términos
+        const aceptaTerminos = document.getElementById('aceptaTerminos').checked;
+        if (!aceptaTerminos) {
+            alert('Debes aceptar los términos y condiciones para registrarte.');
+            return;
+        }
 
-     // Añadir el estado de privacidad del perfil
-     const esPrivada = document.getElementById('esprivada').checked;
-     formData.append('esprivada', esPrivada);
+        // Crear FormData con los datos del formulario
+        const formData = new FormData();
+        formData.append('nombre', document.getElementById('nombre').value);
+        formData.append('apellido', document.getElementById('apellido').value);
+        formData.append('fechaNacimiento', document.getElementById('fechanacimiento').value);
+        formData.append('mail', document.getElementById('mail').value);
+        formData.append('password', document.getElementById('password').value);
+        formData.append('repetirPassword', document.getElementById('repetirPassword').value);
 
-     // Añadir la foto de perfil si existe
-     const fotoPerfil = document.getElementById('fotoPerfil').files[0];
-     if (fotoPerfil) {
-         formData.append('fotoPerfil', fotoPerfil);
-     }
+        // Añadir el estado de privacidad del perfil
+        const esPrivada = document.getElementById('esprivada').checked;
+        formData.append('esprivada', esPrivada);
 
-     // Realizar la solicitud POST usando fetch
-     fetch('/registro/register', {
-         method: 'POST',
-         body: formData
-     })
-         .then(response => {
-             console.log(response); // Log completo de la respuesta para depuración
-             if (!response.ok) {
-                 throw new Error('Error en el registro');
-             }
-             return response.json();
-         })
-         .then(data => {
-             alert('Registro exitoso: ' + data.message); // Mostrar mensaje de éxito
-             document.getElementById('registroForm').reset(); // Limpiar formulario
-             window.location.href = 'login.html'; // Redirigir al login
-         })
-         .catch(error => {
-             console.error('Error:', error);
-             alert('Error en el registro: ' + error.message); // Mostrar error si ocurre
-         });
- });
+        // Añadir la foto de perfil si existe
+        const fotoPerfil = document.getElementById('fotoPerfil').files[0];
+        if (fotoPerfil) {
+            formData.append('fotoPerfil', fotoPerfil);
+        }
 
-
+        // Realizar la solicitud POST usando fetch
+        fetch('/registro/register', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                console.log(response); // Log completo de la respuesta para depuración
+                if (!response.ok) {
+                    throw new Error('Error en el registro');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Registro exitoso: ' + data.message); // Mostrar mensaje de éxito
+                document.getElementById('registroForm').reset(); // Limpiar formulario
+                window.location.href = 'login.html'; // Redirigir al login
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error en el registro: ' + error.message); // Mostrar error si ocurre
+            });
+    });
 </script>
 </body>
 </html>
